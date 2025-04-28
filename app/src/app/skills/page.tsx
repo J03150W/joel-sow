@@ -235,8 +235,9 @@ const SkillSection = ({
         <div className="h-full flex">
           <div
             ref={contentRef}
-            className="h-full overflow-y-auto px-6 py-6 bg-white flex-1"
-            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+            className="h-full overflow-y-auto px-6 py-6 bg-white flex-1 
+            [scrollbar-width:none] [-ms-overflow-style:none]
+            [-webkit-scrollbar]:hidden" /* Tailwind way to hide scrollbar */
           >
             <div className="flex items-center justify-between">
               <h2
@@ -306,7 +307,8 @@ const SkillSection = ({
       </div>
       <div
         ref={scrollbarRef}
-        className="fixed right-0 top-0 h-full w-[var(--scrollbar-width)] bg-gray-100 z-[10002] flex flex-col"
+        className="fixed right-0 top-0 h-full w-[var(--scrollbar-width)] 
+            bg-gray-100 z-[10002] flex-col hidden md:flex" /* Hidden on mobile */
       >
         <div
           className="w-full h-4 flex items-center justify-center cursor-pointer hover:bg-gray-300"
