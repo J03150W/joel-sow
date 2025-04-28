@@ -1,3 +1,4 @@
+"use client";
 import { useLanguage } from "@/context/LanguageContext";
 import { useEffect, useRef, useState } from "react";
 import NoStrictPortal from "../components/noStrictPortal";
