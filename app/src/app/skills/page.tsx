@@ -382,8 +382,9 @@ export default function Skills() {
           {skills.map((skill, index) => (
             <div
               key={index}
-              className="luxurious h-50 md:h-80 2xl:h-3/6 w-2xs 2xl:w-sm hover:bg-gray-400/10 transition-all rounded-lg flex justify-center items-center text-5xl 2xl:text-7xl hover:scale-110 cursor-pointer group"
+              className="h-50 md:h-80 2xl:h-3/6 w-2xs 2xl:w-sm hover:bg-gray-400/10 transition-all rounded-lg flex justify-center items-center text-5xl 2xl:text-7xl hover:scale-110 cursor-pointer group"
               onClick={() => setSelectedSkill(skill)}
+              style={{ fontFamily: "Luxurious Script, sans-serif" }}
             >
               <div className="relative">
                 {skill.title}

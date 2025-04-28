@@ -434,7 +434,10 @@ const ExperienceSection = ({
             }}
             transition={{ type: "spring", stiffness: 80, damping: 25 }}
           />
-          <div className="luxurious absolute -top-12 left-0 w-full flex justify-between text-3xl font-medium">
+          <div
+            className="absolute -top-12 left-0 w-full flex justify-between text-3xl font-medium"
+            style={{ fontFamily: "Luxurious Script, sans-serif" }}
+          >
             <span>{markers[0]}</span>
             <span>{markers[markers.length - 1]}</span>
           </div>

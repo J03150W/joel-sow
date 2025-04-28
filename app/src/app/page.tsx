@@ -6,16 +6,6 @@ import About from "./about/page";
 import Skills from "./skills/page";
 import { useLanguage } from "@/context/LanguageContext";
 
-const titleText = {
-  en: "Welcome to my Portfolio",
-  de: "Willkommen zu meinem Portfolio",
-};
-
-const scrollDownText = {
-  en: "scroll down",
-  de: "nach unten scrollen",
-};
-
 export default function Home() {
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
   const [follower, setFollower] = useState({ x: 0, y: 0 });
@@ -130,6 +120,7 @@ export default function Home() {
           className="flex justify-center items-center"
           onMouseEnter={() => setIsHoveringTitle(true)}
           onMouseLeave={() => setIsHoveringTitle(false)}
+          style={{ fontFamily: "Luxurious Script, sans-serif" }}
         >
           Welcome to my CV
         </div>

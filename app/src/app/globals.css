@@ -20,6 +20,14 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: "Luxurious Script";
+  src: url("/fonts/LuxuriousScript-Regular.ttf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 @layer utilities {
   .animate-blink {
     animation: blink 3s step-start infinite;
@@ -33,10 +41,6 @@
       opacity: 0;
     }
   }
-}
-
-.luxurious {
-  font-family: 'Luxurious Script', cursive;
 }
 
 html, body {
