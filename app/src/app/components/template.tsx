@@ -1,25 +1,66 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Navbar from "./navbar";
 import FakeSong from "./musicPlayer";
 import { useAudioPlayer } from "./audioPlayer";
+import Sidebar from "./sidebar";
+
+function useSectionObserver(setActiveSection: (id: string) => void) {
+  const observer = useRef<IntersectionObserver>(null);
+
+  useEffect(() => {
+    const sections = document.querySelectorAll("div[id]");
+    const options = {
+      root: null,
+      rootMargin: "0px",
+      threshold: 0.6,
+    };
+
+    observer.current = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setActiveSection(entry.target.id);
+        }
+      });
+    }, options);
+
+    sections.forEach((section) => {
+      observer.current?.observe(section);
+    });
+
+    return () => observer.current?.disconnect();
+  }, [setActiveSection]);
+}
 
 export default function Template({ children }: { children: React.ReactNode }) {
   const [showUI, setShowUI] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>("home");
   const player = useAudioPlayer();
+  const [hasScrollbar, setHasScrollbar] = useState(false);
+
+  useSectionObserver(setActiveSection);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setHasScrollbar(
+        document.documentElement.scrollHeight > window.innerHeight
+      );
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
-    <div className="relative min-h-screen bg-[#F6F0E1] overflow-hidden">
-      <div className="fixed bottom-0 left-0 w-full z-0 pointer-events-none select-none">
-        <img src="/backgroundGrass.png" alt="Grass" className="w-full h-auto" />
-      </div>
-
+    <div className="relative">
       <div className="fixed top-0 left-0 w-full z-40">
         <Navbar />
       </div>
 
+      <Sidebar activeSection={activeSection} />
       <div>
-        <audio
+        {/* <audio
           ref={player.audioRef}
           src={player.currentSong.src}
           preload="auto"
@@ -28,7 +69,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
         {!showUI && (
           <button
             onClick={() => setShowUI(true)}
-            className="fixed bottom-6 left-6 z-[9999] w-12 h-12 flex items-center justify-center hover:scale-105 transition-transform cursor-pointer"
+            className="fixed bottom-6 left-6 z-40 w-12 h-12 flex items-center justify-center hover:scale-105 transition-transform cursor-pointer"
           >
             <img src="/icons/music.svg" alt="music" width={32} height={32} />
           </button>
@@ -36,12 +77,14 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
         {showUI && (
           <FakeSong showClose onClose={() => setShowUI(false)} {...player} />
-        )}
+        )} */}
 
-        {/* Content */}
-        <main className="relative z-10 pt-16 custom-scroll overflow-y-auto">
-          {children}
-        </main>
+        <main className="relative z-10 pt-16">{children}</main>
+
+        <div
+          id="portal-root"
+          className="z-[10001] fixed inset-0 pointer-events-none"
+        />
       </div>
     </div>
   );

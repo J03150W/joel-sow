@@ -1,5 +1,9 @@
 "use client";
+import { useEffect, useRef, useState } from "react";
 import { useLanguage } from "../../context/LanguageContext";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { motion, AnimatePresence, useSpring } from "framer-motion";
+import { Langar } from "next/font/google";
 
 const workExperience = [
   {
@@ -265,95 +269,240 @@ const schoolExperience = [
   },
 ];
 
-export default function Experience() {
+const now = {
+  en: "Now",
+  de: "Jetzt",
+};
+
+interface ExperienceSectionProps {
+  experiences: {
+    title: { [key: string]: string };
+    range: { [key: string]: string };
+    description: { [key: string]: string };
+    logo: string;
+    techStack?: Tech[];
+  }[];
+  highlightColor: string;
+  reversed: boolean;
+  markers: string[];
+  title: string;
+}
+
+interface Tech {
+  name: string;
+  type: string;
+}
+
+const ExperienceSection = ({
+  experiences,
+  highlightColor,
+  reversed,
+  markers,
+  title,
+}: ExperienceSectionProps) => {
   const { lang } = useLanguage();
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const timelineRef = useRef<HTMLDivElement>(null);
+  const [progress, setProgress] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const total = experiences.length;
+  const CARD_HEIGHT = 80;
+  const scrollSectionHeight = total * CARD_HEIGHT;
 
-  const SectionCard = ({
-    title,
-    data,
-  }: {
-    title: string;
-    data: {
-      title: { en: string; de: string };
-      range: { en: string; de: string };
-      description: { en: string; de: string };
-      logo?: string;
-      techStack?: { name: string; type: string }[];
-    }[];
-  }) => (
-    <div className="bg-[#f6f0e1]/50 backdrop-blur-md rounded-xl p-6 mb-6 self-center w-5xl">
-      <span className="w-full text-left text-2xl font-bold text-[#3e3e2e] flex justify-between items-center mb-4 gap-2">
-        {title}
-      </span>
+  const springProgress = useSpring(0, {
+    stiffness: 80,
+    damping: 25,
+  });
 
-      <div className="flex flex-col gap-6">
-        {data.map((item, idx) => (
+  useEffect(() => {
+    if (!isDragging) {
+      springProgress.set(progress);
+    }
+  }, [progress, isDragging, springProgress]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!sectionRef.current || isDragging) return;
+
+      const viewportHeight = window.innerHeight;
+      const sectionHeight = sectionRef.current.offsetHeight;
+
+      const scrollPosition = window.scrollY - sectionRef.current.offsetTop;
+      const maxScroll = sectionHeight - viewportHeight;
+      const scrollPercentage = Math.max(
+        0,
+        Math.min(1, scrollPosition / maxScroll)
+      );
+
+      setProgress(scrollPercentage);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isDragging]);
+
+  const handleTimelineClick = (e: React.MouseEvent) => {
+    if (!timelineRef.current) return;
+
+    const rect = timelineRef.current.getBoundingClientRect();
+    const offsetX = e.clientX - rect.left;
+    const newProgress = offsetX / rect.width;
+
+    const segmentWidth = 1 / (total - 1);
+    const segmentIndex = Math.round(newProgress / segmentWidth);
+    const snappedProgress = segmentIndex * segmentWidth;
+
+    setProgress(snappedProgress);
+
+    if (sectionRef.current) {
+      const sectionHeight = sectionRef.current.offsetHeight;
+      const maxScroll = sectionHeight - window.innerHeight;
+      const scrollTo = maxScroll * snappedProgress;
+      window.scrollTo({
+        top: scrollTo + sectionRef.current.offsetTop,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const currentIndex = Math.min(Math.floor(progress * total), total - 1);
+
+  const segmentWidth = 1 / total;
+
+  if (reversed) experiences = [...experiences].reverse();
+
+  return (
+    <div
+      ref={sectionRef}
+      style={{ height: `${scrollSectionHeight}vh` }}
+      className="relative text-[#3e3e2e]"
+    >
+      <div
+        id="experience"
+        className="sticky top-0 h-screen flex flex-col justify-center items-center p-4 md:p-8 md:pt-32 -translate-y-12"
+      >
+        <div
+          ref={timelineRef}
+          className="flex w-full max-w-3xl 2xl:max-w-6xl items-center mb-8 lg:mb-16 relative cursor-pointer mt-16"
+          onClick={handleTimelineClick}
+        >
+          <div className="w-full h-0.5 bg-[#3e3e2e]/30 rounded-full" />
+          {Array.from({ length: total + 1 }).map((_, index) => (
+            <div
+              key={index}
+              className="absolute w-0.5 h-4 bg-[#3e3e2e]/50 rounded-full top-1/2 transform -translate-y-1/2"
+              style={{
+                left: `${(index / total) * 100}%`,
+              }}
+            />
+          ))}
           <div
-            key={idx}
-            className="border-b border-[#ddd0bb] pb-4 last:border-none"
-          >
-            {/* Title + Logo + Date in one row */}
-            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between mb-1">
-              <div className="flex items-center gap-3">
-                {item.logo && (
-                  <img
-                    src={item.logo}
-                    alt="logo"
-                    className="w-10 h-10 object-contain rounded-md"
-                  />
-                )}
-                <div className="text-md font-semibold text-[#3e3e2e]">
-                  {item.title[lang]}
-                </div>
-              </div>
-              <div className="text-md font-semibold text-[#3e3e2e] sm:text-right">
-                {item.range[lang]}
-              </div>
-            </div>
-
-            <p className="text-[#2e2e2e] text-base leading-relaxed">
-              {item.description[lang]}
-            </p>
-
-            {item.techStack && item.techStack.length > 0 && (
-              <div className="flex flex-wrap gap-2 mt-2 items-center">
-                <span className="font-bold text-[#3e3e2e]">
-                  {lang === "en" ? "Tech Stack:" : "Technologien:"}
-                </span>
-                {item.techStack.map((tech, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center gap-2 bg-[#eee3cd] text-[#3e3e2e] px-3 py-1 rounded-full text-sm font-medium shadow-sm"
-                  >
-                    <span
-                      className={`w-2 h-2 rounded-full ${
-                        tech.type === "language"
-                          ? "bg-[#ff0000]"
-                          : "bg-[#00aaff]"
-                      }`}
-                    ></span>
-                    {tech.name}
-                  </div>
-                ))}
-              </div>
-            )}
+            className="absolute bg-white text-white text-xs px-2 py-1 z-50"
+            style={{
+              left: "100%",
+              transform: "translateX(0) translateY(-50%)",
+              top: "50%",
+              marginLeft: "2px",
+            }}
+          />
+          <motion.div
+            className="absolute h-2 top-1/2 transform -translate-y-1/2 rounded-full"
+            style={{
+              backgroundColor: highlightColor,
+              left: `${Math.max(
+                0,
+                springProgress.get() * 100 -
+                  Math.min(
+                    springProgress.get() * 100,
+                    segmentWidth * 100 * (1 - springProgress.get())
+                  )
+              )}%`,
+              width: `${Math.min(
+                segmentWidth * 100,
+                springProgress.get() < segmentWidth
+                  ? springProgress.get() *
+                      (segmentWidth * 100) *
+                      (1 / segmentWidth)
+                  : Math.min(
+                      segmentWidth * 100,
+                      ((1 - springProgress.get()) * 100) / (1 - segmentWidth)
+                    )
+              )}%`,
+              transformOrigin: "left center",
+            }}
+            transition={{ type: "spring", stiffness: 80, damping: 25 }}
+          />
+          <div className="luxurious absolute -top-12 left-0 w-full flex justify-between text-3xl font-medium">
+            <span>{markers[0]}</span>
+            <span>{markers[markers.length - 1]}</span>
           </div>
-        ))}
+        </div>
+        <div className="relative w-full max-w-3xl 2xl:max-w-6xl h-80 lg:h-96 xl:h-[32rem]">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentIndex}
+              initial={{ opacity: 0, y: 50, rotateY: -15 }}
+              animate={{ opacity: 1, y: 0, rotateY: 0 }}
+              exit={{ opacity: 0, y: -50, rotateY: 15 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="absolute top-0 left-0 w-full h-full perspective-1000"
+            >
+              <div className="h-full pl-6 pr-6 pb-6 bg-white flex flex-col">
+                <div className="flex items-center gap-4 mb-4">
+                  <img
+                    src={experiences[currentIndex].logo}
+                    alt="Logo"
+                    className="w-12 h-12 md:w-14 md:h-14 object-contain"
+                  />
+                  <div>
+                    <div className="text-sm md:text-base lg:text-xl font-bold">
+                      {experiences[currentIndex].title[lang]}
+                    </div>
+                    <div className="text-xs md:text-sm italic text-[#3e3e2e]/70">
+                      {experiences[currentIndex].range[lang]}
+                    </div>
+                  </div>
+                </div>
+                <p className="text-sm md:text-base lg:text-md 2xl:text-xl leading-relaxed whitespace-pre-wrap">
+                  {experiences[currentIndex].description[lang]}
+                </p>
+                {experiences[currentIndex].techStack && (
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {experiences[currentIndex].techStack?.map((tech, i) => (
+                      <span
+                        key={i}
+                        className="px-2 py-1 text-xs md:text-sm 2xl:text-base bg-[#3e3e2e]/10 rounded-full text-[#3e3e2e]"
+                      >
+                        {tech.name}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        </div>
       </div>
     </div>
   );
+};
+
+export default function Experience() {
+  const { lang } = useLanguage();
 
   return (
-    <div className="px-20 py-10 flex flex-col gap-6">
-      <SectionCard
-        title={lang === "en" ? "Work Experience" : "Berufserfahrung"}
-        data={workExperience}
-      />
-
-      <SectionCard
-        title={lang === "en" ? "Education" : "Ausbildung"}
-        data={schoolExperience}
-      />
+    <div>
+      <div className="my-20">
+        <ExperienceSection
+          experiences={workExperience}
+          highlightColor="#A7BC3E"
+          reversed={false}
+          markers={[now[lang], "2021"]}
+          title="Work Experience"
+        />
+      </div>
     </div>
   );
 }
