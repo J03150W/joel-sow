@@ -342,6 +342,34 @@ export default function Skills() {
   const [selectedSkill, setSelectedSkill] = useState<any | null>(null);
   const [showContent, setShowContent] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
+  const [mouse, setMouse] = useState({ x: 0, y: 0 });
+  const [follower, setFollower] = useState({ x: 0, y: 0 });
+  const [isHoveringBackground, setIsHoveringBackground] = useState(true);
+  const animationRef = useRef<number | null>(null);
+  const [isHoveringSkillSection, setIsHoveringSkillSection] = useState(false);
+  const [showCloseText, setShowCloseText] = useState(false);
+
+  const handleBackgroundMouseEnter = () => {
+    setIsHoveringBackground(true);
+    setShowCloseText(true);
+  };
+
+  const handleBackgroundMouseLeave = () => {
+    setIsHoveringBackground(false);
+    setShowCloseText(false);
+  };
+
+  const handleSkillSectionMouseEnter = () => {
+    setIsHoveringSkillSection(true);
+    setShowCloseText(false);
+  };
+
+  const handleSkillSectionMouseLeave = () => {
+    setIsHoveringSkillSection(false);
+    if (isHoveringBackground) {
+      setShowCloseText(true);
+    }
+  };
 
   useEffect(() => {
     if (selectedSkill) {
@@ -349,7 +377,6 @@ export default function Skills() {
     } else {
       document.body.classList.remove("no-scrollbar");
     }
-
     return () => {
       document.body.classList.remove("no-scrollbar");
     };
@@ -374,39 +401,76 @@ export default function Skills() {
       document.body.style.pointerEvents = "none";
       const portalRoot = document.getElementById("portal-root");
       if (portalRoot) portalRoot.style.pointerEvents = "auto";
-
       setTimeout(() => setShowContent(true), 10);
     }
   }, [selectedSkill]);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMouse({ x: e.clientX, y: e.clientY });
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
+
+  useEffect(() => {
+    const speed = 0.1;
+    let lastTime = performance.now();
+
+    const animate = (time: number) => {
+      const delta = time - lastTime;
+      lastTime = time;
+
+      setFollower((prev) => {
+        const dx = (mouse.x - prev.x) * speed * (delta / 16);
+        const dy = (mouse.y - prev.y) * speed * (delta / 16);
+        return { x: prev.x + dx, y: prev.y + dy };
+      });
+
+      animationRef.current = requestAnimationFrame(animate);
+    };
+
+    animationRef.current = requestAnimationFrame(animate);
+    return () => {
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+    };
+  }, [mouse]);
+
   return (
-    <>
-      <div id="skills" className="h-screen flex items-center justify-center">
-        <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 p-4 h-screen">
-          {skills.map((skill, index) => (
-            <div
-              key={index}
-              className="h-40 md:h-80 2xl:h-3/6 w-2xs 2xl:w-sm transition-all rounded-lg flex justify-center items-center text-5xl 2xl:text-7xl hover:scale-110 cursor-pointer group"
-              onClick={() => setSelectedSkill(skill)}
-              style={{ fontFamily: "Luxurious Script, sans-serif" }}
-            >
-              <div className="relative">
-                {skill.title}
-                <span className="absolute bottom-0 left-0 w-0 h-1 2xl:h-1.5 bg-[#CED877] transition-all duration-300 group-hover:w-full rounded-xs"></span>
-              </div>
+    <div id="skills" className="h-screen flex items-center justify-center">
+      <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 p-4 h-screen">
+        {skills.map((skill, index) => (
+          <div
+            key={index}
+            className="h-40 md:h-80 2xl:h-3/6 w-2xs 2xl:w-sm transition-all rounded-lg flex justify-center items-center text-5xl 2xl:text-7xl hover:scale-110 cursor-pointer group"
+            onClick={() => setSelectedSkill(skill)}
+            style={{ fontFamily: "Luxurious Script, sans-serif" }}
+          >
+            <div className="relative">
+              {skill.title}
+              <span className="absolute bottom-0 left-0 w-0 h-1 2xl:h-1.5 bg-[#CED877] transition-all duration-300 group-hover:w-full rounded-xs"></span>
             </div>
-          ))}
-          {selectedSkill && (
-            <NoStrictPortal>
+          </div>
+        ))}
+
+        {selectedSkill && (
+          <NoStrictPortal>
+            <div
+              className={`fixed inset-0 z-[10000] bg-black/50 backdrop-blur-sm skill-section-backdrop ${
+                isClosing ? "skill-section-backdrop-exit" : ""
+              }`}
+              onMouseEnter={handleBackgroundMouseEnter}
+              onMouseLeave={handleBackgroundMouseLeave}
+            />
+            {showContent && (
               <div
-                className={`fixed inset-0 z-[10000] bg-black/50 backdrop-blur-sm skill-section-backdrop ${
-                  isClosing ? "skill-section-backdrop-exit" : ""
+                className={`skill-section-enter ${
+                  isClosing ? "skill-section-exit" : ""
                 }`}
-              />
-              {showContent && (
+              >
                 <div
-                  className={`skill-section-enter ${
-                    isClosing ? "skill-section-exit" : ""
-                  }`}
+                  onMouseEnter={handleSkillSectionMouseEnter}
+                  onMouseLeave={handleSkillSectionMouseLeave}
                 >
                   <SkillSection
                     {...selectedSkill}
@@ -414,11 +478,28 @@ export default function Skills() {
                     isClosing={isClosing}
                   />
                 </div>
-              )}
-            </NoStrictPortal>
-          )}
-        </div>
+                {isHoveringBackground && !isHoveringSkillSection && (
+                  <div
+                    className="text-[#e0e0c7] z-[10001] italic text-md flex items-center justify-center pointer-events-none transition-opacity duration-300 ease-in-out"
+                    style={{
+                      left: follower.x,
+                      top: follower.y,
+                      position: "fixed",
+                      transform: "translate(-50%, -50%)",
+                      whiteSpace: "nowrap",
+                      fontFamily: "Switzer, sans-serif",
+                      marginTop: "1.25rem",
+                      marginLeft: "-2.5rem",
+                    }}
+                  >
+                    close
+                  </div>
+                )}
+              </div>
+            )}
+          </NoStrictPortal>
+        )}
       </div>
-    </>
+    </div>
   );
 }
