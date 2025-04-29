@@ -54,17 +54,11 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="relative bg-[#EEEDE9]">
-      <div className="block md:hidden fixed top-0 left-0 w-full z-50">
-        <div className="bg-[#EEEDE9]/50 backdrop-blur-md">
-          <Navbar />
-          <Sidebar activeSection={activeSection} />
-        </div>
-      </div>
-
-      <div className="hidden md:block fixed top-0 left-0 w-full z-40">
+      <div className="md:block fixed top-0 left-0 w-full z-50">
         <Navbar />
       </div>
-      <div className="hidden md:block">
+
+      <div className="md:block fixed top-16 left-0 w-full z-40">
         <Sidebar activeSection={activeSection} />
       </div>
       <div>

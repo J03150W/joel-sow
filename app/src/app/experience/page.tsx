@@ -504,7 +504,6 @@ export default function Experience() {
         markers={[now[lang], "2021"]}
         title="Work Experience"
       />
-      {/*<img src="transition.png" className="w-screen h-auto" />*/}
     </div>
   );
 }
