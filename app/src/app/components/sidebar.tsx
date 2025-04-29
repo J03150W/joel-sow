@@ -20,14 +20,13 @@ export default function Sidebar({ activeSection }: Props) {
 
   return (
     <div
-      className={`
-      transition-opacity duration-150 px-4 py-2
+      className={`w-full transition-opacity duration-150
       ${
         isVisible
           ? "opacity-100 backdrop-blur-md bg-[#EEEDE9]/50"
           : "opacity-0 pointer-events-none"
       }
-      md:opacity-100 md:pointer-events-auto md:backdrop-blur-none md:bg-transparent
+      md:fixed md:top-16 md:left-0 md:bg-transparent md:backdrop-blur-none z-40
     `}
     >
       <ul
@@ -38,6 +37,7 @@ export default function Sidebar({ activeSection }: Props) {
           space-x-4
           md:space-x-0
           md:space-y-4
+          pl-4 py-2
         `}
       >
         {navItems.map(({ id, label }) => (
