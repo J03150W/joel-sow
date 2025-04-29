@@ -20,11 +20,16 @@ export default function Sidebar({ activeSection }: Props) {
 
   return (
     <div
-      className={`fixed top-16 left-0 w-full z-50 transition-opacity duration-100
-        ${isVisible ? "opacity-100" : "opacity-0 pointer-events-none"}
-        bg-white/50 backdrop-blur-lg
-        md:bg-transparent md:backdrop-blur-none
-      `}
+      className={`w-full z-50 transition-opacity duration-100
+      ${
+        isVisible
+          ? "opacity-100"
+          : "backdrop-blur-none opacity-0 pointer-events-none"
+      }
+      bg-[#EEEDE9]/50 backdrop-blur-md
+      md:fixed md:top-16 md:left-0
+      md:bg-transparent md:backdrop-blur-none
+    `}
     >
       <ul
         className={`

@@ -31,7 +31,7 @@ export default function Navbar() {
 
   return (
     <div
-      className="h-16 flex bg-white/50 backdrop-blur-md items-center justify-between px-4 w-full"
+      className="h-16 flex bg-[#EEEDE9]/50 backdrop-blur-md items-center justify-between px-4 w-full"
       style={{ marginRight: needsMargin ? "16px" : "0" }}
     >
       <div className="w-full max-w-screen-xl mx-auto flex justify-between items-center">

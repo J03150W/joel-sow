@@ -76,7 +76,7 @@ body {
   height: 100%;
   z-index: 10000;
   background: rgba(0, 0, 0, 0.5);
-  animation: fadeIn 2s ease-out forwards;
+  animation: fadeIn 1s ease-out forwards;
 }
 
 @keyframes slideInFromLeft {
@@ -124,9 +124,9 @@ body {
 }
 
 .skill-section-backdrop {
-  animation: fadeIn 2s ease-out forwards;
+  animation: fadeIn 0.5s ease-out forwards;
 }
 
 .skill-section-backdrop-exit {
-  animation: fadeOut 2s ease-out forwards;
+  animation: fadeOut 0.5s ease-out forwards;
 }

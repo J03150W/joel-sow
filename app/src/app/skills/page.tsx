@@ -82,9 +82,7 @@ const techStackTitles = {
 
 interface Tech {
   name: string;
-  type: string;
   logo: string;
-  relatedTo?: string[];
 }
 
 interface Props {
@@ -225,30 +223,30 @@ const SkillSection = ({
     <>
       <div
         ref={sectionRef}
-        className="fixed right-0 top-0 h-full w-full max-w-2xl 2xl:max-w-4xl bg-white shadow-xl z-[10001] overflow-hidden"
+        className="fixed right-0 top-0 h-full w-full max-w-2xl 2xl:max-w-4xl bg-[#3b3b3b] shadow-xl z-[10001] overflow-hidden"
         style={{
           animation: isClosing
-            ? "slideOutToLeft 0.4s cubic-bezier(0.2, 0.8, 0.3, 1) forwards"
-            : "slideInFromLeft 0.4s cubic-bezier(0.2, 0.8, 0.3, 1) forwards",
+            ? "slideOutToLeft 2s cubic-bezier(0.2, 0.8, 0.3, 1) forwards"
+            : "slideInFromLeft 1s cubic-bezier(0.2, 0.8, 0.3, 1) forwards",
         }}
       >
         <div className="h-full flex">
           <div
             ref={contentRef}
-            className="h-full overflow-y-auto px-6 py-6 bg-white flex-1 
+            className="h-full overflow-y-auto px-6 py-6 flex-1 
             [scrollbar-width:none] [-ms-overflow-style:none]
-            [-webkit-scrollbar]:hidden" /* Tailwind way to hide scrollbar */
+            [-webkit-scrollbar]:hidden"
           >
             <div className="flex items-center justify-between">
               <h2
-                className="italic text-2xl 2xl:text-4xl"
+                className="italic text-2xl 2xl:text-4xl text-white"
                 style={{ fontFamily: "Switzer, sans-serif" }}
               >
                 {title}
               </h2>
               <button
                 onClick={onClose}
-                className="text-gray-700 hover:text-gray-900 focus:outline-none p-1 cursor-pointer"
+                className="text-white hover:text-gray-300 hover:scale-105 focus:outline-none p-1 cursor-pointer md:mr-3"
                 aria-label="Close"
               >
                 <span className="block relative w-6 h-6">
@@ -258,33 +256,36 @@ const SkillSection = ({
               </button>
             </div>
             <p
-              className="text-4xl 2xl:text-6xl max-w-xl 2xl:max-w-3xl italic text-[#3e3e2e] mt-2 "
+              className="text-4xl 2xl:text-6xl max-w-xl 2xl:max-w-3xl italic text-[#e0e0c7] mt-2 "
               style={{ fontFamily: "Switzer, sans-serif" }}
             >
               {quote}
             </p>
-            <p className="text-md 2xl:text-xl mt-4 whitespace-pre-line mb-4">
+            <p
+              className="text-md 2xl:text-2xl mt-4 whitespace-pre-line mb-4 text-white"
+              style={{ fontFamily: "Switzer, sans-serif" }}
+            >
               {desc[lang]}
             </p>
             {title !== "Else" && (
               <>
                 <div className="mb-20">
-                  <h4 className="text-xl font-semibold mb-4">
+                  <h4 className="text-xl 2xl:text-3xl font-semibold mb-4 text-white">
                     {techStackTitles.prefered[lang]}
                   </h4>
 
-                  <div className="flex flex-wrap gap-4 h-7 mb-10">
+                  <div className="flex flex-wrap gap-4 h-7 mb-10 2xl:mb-16">
                     {prefered.map((tech) => {
                       return (
                         <img
                           key={tech.name}
                           src={tech.logo}
-                          className="h-12 md:h-15 w-auto hover:scale-110"
+                          className="h-12 md:h-15 2xl:h-20 w-auto hover:scale-110"
                         />
                       );
                     })}
                   </div>
-                  <p className="text-xl font-semibold mb-4">
+                  <p className="text-xl 2xl:text-3xl font-semibold mb-4 text-white">
                     {techStackTitles.extra[lang]}
                   </p>
                   <div className="flex flex-wrap gap-4 h-7">
@@ -293,7 +294,7 @@ const SkillSection = ({
                         <img
                           key={tech.name}
                           src={tech.logo}
-                          className="h-12 md:h-15 w-auto hover:scale-110"
+                          className="h-12 md:h-15 2xl:h-20 w-auto hover:scale-110"
                         />
                       );
                     })}
@@ -301,14 +302,14 @@ const SkillSection = ({
                 </div>
               </>
             )}
-            {title === "Else" && <p>Coming Soon</p>}
+            {title === "Else" && <p className="text-white">Coming Soon</p>}
           </div>
         </div>
       </div>
       <div
         ref={scrollbarRef}
         className="fixed right-0 top-0 h-full w-[var(--scrollbar-width)] 
-            bg-gray-100 z-[10002] flex-col hidden md:flex" /* Hidden on mobile */
+            bg-gray-100 z-[10002] flex-col hidden md:flex"
       >
         <div
           className="w-full h-4 flex items-center justify-center cursor-pointer hover:bg-gray-300"
@@ -380,17 +381,17 @@ export default function Skills() {
   return (
     <>
       <div id="skills" className="h-screen flex items-center justify-center">
-        <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 p-4">
+        <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 p-4 h-screen">
           {skills.map((skill, index) => (
             <div
               key={index}
-              className="h-50 md:h-80 2xl:h-3/6 w-2xs 2xl:w-sm hover:bg-gray-400/10 transition-all rounded-lg flex justify-center items-center text-5xl 2xl:text-7xl hover:scale-110 cursor-pointer group"
+              className="h-50 md:h-80 2xl:h-3/6 w-2xs 2xl:w-sm transition-all rounded-lg flex justify-center items-center text-5xl 2xl:text-7xl hover:scale-110 cursor-pointer group"
               onClick={() => setSelectedSkill(skill)}
               style={{ fontFamily: "Luxurious Script, sans-serif" }}
             >
               <div className="relative">
                 {skill.title}
-                <span className="absolute bottom-0 left-0 w-0 h-1 bg-[#A7BC3E] transition-all duration-300 group-hover:w-full"></span>
+                <span className="absolute bottom-0 left-0 w-0 h-1 2xl:h-1.5 bg-[#CED877] transition-all duration-300 group-hover:w-full rounded-xs"></span>
               </div>
             </div>
           ))}
@@ -418,6 +419,7 @@ export default function Skills() {
           )}
         </div>
       </div>
+      {/*<img src="2transition.png" className="w-screen h-auto" />*/}
     </>
   );
 }

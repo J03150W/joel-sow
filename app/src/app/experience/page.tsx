@@ -399,7 +399,7 @@ const ExperienceSection = ({
             />
           ))}
           <div
-            className="absolute bg-white text-white text-xs px-2 py-1 z-50"
+            className="absolute bg-[#EEEDE9] px-2 py-1 z-50"
             style={{
               left: "100%",
               transform: "translateX(0) translateY(-50%)",
@@ -452,7 +452,7 @@ const ExperienceSection = ({
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
               className="absolute top-0 left-0 w-full h-full perspective-1000"
             >
-              <div className="h-full pl-6 pr-6 pb-6 bg-white flex flex-col">
+              <div className="h-full pl-6 pr-6 pb-6 flex flex-col">
                 <div className="flex items-center gap-4 mb-4">
                   <img
                     src={experiences[currentIndex].logo}
@@ -496,16 +496,15 @@ export default function Experience() {
   const { lang } = useLanguage();
 
   return (
-    <div>
-      <div className="my-20">
-        <ExperienceSection
-          experiences={workExperience}
-          highlightColor="#A7BC3E"
-          reversed={false}
-          markers={[now[lang], "2021"]}
-          title="Work Experience"
-        />
-      </div>
+    <div className="">
+      <ExperienceSection
+        experiences={workExperience}
+        highlightColor="#CED877"
+        reversed={false}
+        markers={[now[lang], "2021"]}
+        title="Work Experience"
+      />
+      {/*<img src="transition.png" className="w-screen h-auto" />*/}
     </div>
   );
 }

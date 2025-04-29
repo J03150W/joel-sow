@@ -5,6 +5,7 @@ import Experience from "./experience/page";
 import About from "./about/page";
 import Skills from "./skills/page";
 import { useLanguage } from "@/context/LanguageContext";
+import { WavyBackground } from "@/components/ui/wavy-background";
 
 export default function Home() {
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
@@ -106,7 +107,7 @@ export default function Home() {
       <div
         id="home"
         ref={welcomeSectionRef}
-        className="luxurious h-screen w-screen flex justify-center items-center pb-36 text-5xl lg:text-9xl 2xl:text-[180px]"
+        className="luxurious h-screen w-screen flex justify-center items-center pb-36 text-5xl lg:text-9xl 2xl:text-[180px] bg-[#EEEDE9]"
         onMouseEnter={() => setShowScrollDown(true)}
         onMouseLeave={() => {
           if (!welcomeSectionRef.current) return;

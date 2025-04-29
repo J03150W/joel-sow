@@ -53,12 +53,20 @@ export default function Template({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <div className="relative">
-      <div className="fixed top-0 left-0 w-full z-40">
-        <Navbar />
+    <div className="relative bg-[#EEEDE9]">
+      <div className="block md:hidden fixed top-0 left-0 w-full z-50">
+        <div className="bg-[#EEEDE9]/50 backdrop-blur-md">
+          <Navbar />
+          <Sidebar activeSection={activeSection} />
+        </div>
       </div>
 
-      <Sidebar activeSection={activeSection} />
+      <div className="hidden md:block fixed top-0 left-0 w-full z-40">
+        <Navbar />
+      </div>
+      <div className="hidden md:block">
+        <Sidebar activeSection={activeSection} />
+      </div>
       <div>
         {/* <audio
           ref={player.audioRef}

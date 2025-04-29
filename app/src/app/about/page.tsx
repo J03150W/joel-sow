@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { Canvas, useFrame, useLoader } from "@react-three/fiber";
 import { Mesh } from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { DraggableCardBody } from "@/components/ui/draggable-card";
 
 const sectionTitles = {
   about: {
@@ -51,6 +52,14 @@ const links = [
     link: "mailto:joelsow247@gmail.com",
     icon: "/icons/email.svg",
   },
+];
+
+const media = [
+  { type: "image", src: "/media/lego.jpeg" },
+  { type: "image", src: "/media/luna.jpeg" },
+  { type: "image", src: "/media/football.png" },
+  { type: "image", src: "/media/sunset.jpeg" },
+  { type: "video", src: "/media/camping.mp4" },
 ];
 
 function MeshComponent() {
@@ -136,8 +145,8 @@ export default function About() {
           <directionalLight position={[0, 5, 5]} intensity={1} />
           <MeshComponent />
         </Canvas>
-      </div>
-      {/*<div
+        {/* </div>
+      <div
         id="about"
         className="w-5xl mx-auto mb-6 flex justify-between gap-6  bg-[#f6f0e1]/50 backdrop-blur-sm rounded-xl"
       >
@@ -190,7 +199,14 @@ export default function About() {
           </div>
         </div>
       </div>
-      */}
+  
+      <div id="about" className="h-screen flex justify-center items-center">
+        {media.map((item) => (
+          <DraggableCardBody className="flex justify-center items-center">
+            <img className="w-40 h-40" src={item.src} />
+          </DraggableCardBody>
+        ))}*/}
+      </div>
     </>
   );
 }
