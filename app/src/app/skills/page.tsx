@@ -63,7 +63,11 @@ Testing und Logging gehören für mich genauso dazu. Nicht nur, weil es meinen W
   {
     title: { en: "Otherwise", de: "Weiteres" },
     desc: {
-      en: ``,
+      en: `I'm fascinated by the wide range of technologies that shape computer science – especially how differently they are structured and how they behave in real-world applications. During my training, I was able to dive into various areas and continuously expand my knowledge.
+
+Examples include working with databases, understanding different programming paradigms – such as object-oriented vs. functional – and, as a particular highlight, blockchain technology. 
+
+Especially in blockchain, I not only gained theoretical knowledge through courses but also explored real-world applications during company visits. I applied and deepened my technical understanding through projects, assignments, and smaller pitches.`,
       de: `Mich faszinieren die vielen Technologien, die die Informatik prägen – besonders, wie unterschiedlich sie gedacht sind und wie sie sich im praktischen Einsatz verhalten. In meiner Ausbildung konnte ich in verschiedenste Bereiche eintauchen und mein Wissen laufend erweitern.
 
 Beispiele dafür sind der Umgang mit Datenbanken, das Verständnis unterschiedlicher Programmierparadigmen – etwa objektorientiert vs. funktional – und als besonderes Highlight das Thema Blockchain. 
