@@ -117,13 +117,13 @@ export default function Home() {
         }}
       >
         <div
-          className="w-4/6 justify-center"
+          className="md:w-4/6 md:ml-0 ml-8 w-full justify-center"
           onMouseEnter={() => setIsHoveringTitle(true)}
           onMouseLeave={() => setIsHoveringTitle(false)}
           style={{ fontFamily: "Luxurious Script, sans-serif" }}
         >
           {"Welcome to my "}
-          <FlipWords duration={5000} words={["CV", "Portfolio"]} />
+          <FlipWords duration={5000} words={["Portfolio", "CV"]} />
         </div>
       </div>
       <Experience />
