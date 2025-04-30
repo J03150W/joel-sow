@@ -4,8 +4,7 @@ import Template from "./components/template";
 import Experience from "./experience/page";
 import About from "./about/page";
 import Skills from "./skills/page";
-import { useLanguage } from "@/context/LanguageContext";
-import { WavyBackground } from "@/components/ui/wavy-background";
+import { FlipWords } from "@/components/ui/flip-words";
 
 export default function Home() {
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
@@ -107,7 +106,7 @@ export default function Home() {
       <div
         id="home"
         ref={welcomeSectionRef}
-        className="luxurious h-screen w-screen flex justify-center items-center pb-36 text-5xl lg:text-9xl 2xl:text-[180px] bg-[#EEEDE9]"
+        className="luxurious w-screen h-screen flex justify-center items-center pb-36 text-5xl lg:text-9xl 2xl:text-[180px] bg-[#EEEDE9]"
         onMouseEnter={() => setShowScrollDown(true)}
         onMouseLeave={() => {
           if (!welcomeSectionRef.current) return;
@@ -118,12 +117,13 @@ export default function Home() {
         }}
       >
         <div
-          className="flex justify-center items-center"
+          className="w-4/6 justify-center"
           onMouseEnter={() => setIsHoveringTitle(true)}
           onMouseLeave={() => setIsHoveringTitle(false)}
           style={{ fontFamily: "Luxurious Script, sans-serif" }}
         >
-          Welcome to my CV
+          {"Welcome to my "}
+          <FlipWords duration={5000} words={["CV", "Portfolio"]} />
         </div>
       </div>
       <Experience />
