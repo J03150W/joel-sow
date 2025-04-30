@@ -111,7 +111,77 @@ const SkillSection = ({
   const isDraggingRef = useRef(false);
   const startYRef = useRef(0);
   const startScrollTopRef = useRef(0);
+
   const { lang } = useLanguage();
+
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [followerPosition, setFollowerPosition] = useState({ x: 0, y: 0 });
+  const [showCloseText, setShowCloseText] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  const animationRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    const checkIfMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkIfMobile();
+    window.addEventListener("resize", checkIfMobile);
+    return () => window.removeEventListener("resize", checkIfMobile);
+  }, []);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      const x = e.clientX;
+      const y = e.clientY;
+
+      setMousePosition({ x, y });
+
+      const isInViewport =
+        x >= 0 && y >= 0 && x <= window.innerWidth && y <= window.innerHeight;
+
+      const sectionRect = sectionRef.current?.getBoundingClientRect();
+      const isHoveringSection =
+        sectionRect &&
+        x >= sectionRect.left &&
+        x <= sectionRect.right &&
+        y >= sectionRect.top &&
+        y <= sectionRect.bottom;
+
+      const shouldShow = !isMobile && isInViewport && !isHoveringSection;
+
+      setShowCloseText(shouldShow);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, [isMobile]);
+
+  useEffect(() => {
+    const speed = 0.1;
+    let lastTime = performance.now();
+
+    const animate = (time: number) => {
+      const delta = time - lastTime;
+      lastTime = time;
+
+      setFollowerPosition((prev) => {
+        const dx = (mousePosition.x - prev.x) * speed * (delta / 16);
+        const dy = (mousePosition.y - prev.y) * speed * (delta / 16);
+        return { x: prev.x + dx, y: prev.y + dy };
+      });
+
+      animationRef.current = requestAnimationFrame(animate);
+    };
+
+    animationRef.current = requestAnimationFrame(animate);
+    return () => {
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+    };
+  }, [mousePosition]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -234,8 +304,8 @@ const SkillSection = ({
           <div
             ref={contentRef}
             className="h-full overflow-y-auto px-6 py-6 flex-1 
-            [scrollbar-width:none] [-ms-overflow-style:none]
-            [-webkit-scrollbar]:hidden"
+              [scrollbar-width:none] [-ms-overflow-style:none]
+              [-webkit-scrollbar]:hidden"
           >
             <div className="flex items-center justify-between">
               <h2
@@ -309,7 +379,7 @@ const SkillSection = ({
       <div
         ref={scrollbarRef}
         className="fixed right-0 top-0 h-full w-[var(--scrollbar-width)] 
-            bg-gray-100 z-[10002] flex-col hidden md:flex"
+              bg-gray-100 z-[10002] flex-col hidden md:flex"
       >
         <div
           className="w-full h-4 flex items-center justify-center cursor-pointer hover:bg-gray-300"
@@ -334,6 +404,24 @@ const SkillSection = ({
           <div className="w-0 h-0 border-l-[5px] border-r-[5px] border-t-[5px] border-l-transparent border-r-transparent border-t-gray-500" />
         </div>
       </div>
+      {showCloseText && (
+        <div
+          className="text-[#e0e0c7] z-[10003] italic text-md flex items-center justify-center pointer-events-none transition-opacity duration-300 ease-in-out"
+          style={{
+            left: followerPosition.x,
+            top: followerPosition.y,
+            position: "fixed",
+            transform: "translate(-100%, -50%)",
+            whiteSpace: "nowrap",
+            fontFamily: "Switzer, sans-serif",
+            marginTop: "1.25rem",
+            marginLeft: "-2.5rem",
+            pointerEvents: "none",
+          }}
+        >
+          close
+        </div>
+      )}
     </>
   );
 };
@@ -342,34 +430,6 @@ export default function Skills() {
   const [selectedSkill, setSelectedSkill] = useState<any | null>(null);
   const [showContent, setShowContent] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
-  const [mouse, setMouse] = useState({ x: 0, y: 0 });
-  const [follower, setFollower] = useState({ x: 0, y: 0 });
-  const [isHoveringBackground, setIsHoveringBackground] = useState(true);
-  const animationRef = useRef<number | null>(null);
-  const [isHoveringSkillSection, setIsHoveringSkillSection] = useState(false);
-  const [showCloseText, setShowCloseText] = useState(false);
-
-  const handleBackgroundMouseEnter = () => {
-    setIsHoveringBackground(true);
-    setShowCloseText(true);
-  };
-
-  const handleBackgroundMouseLeave = () => {
-    setIsHoveringBackground(false);
-    setShowCloseText(false);
-  };
-
-  const handleSkillSectionMouseEnter = () => {
-    setIsHoveringSkillSection(true);
-    setShowCloseText(false);
-  };
-
-  const handleSkillSectionMouseLeave = () => {
-    setIsHoveringSkillSection(false);
-    if (isHoveringBackground) {
-      setShowCloseText(true);
-    }
-  };
 
   useEffect(() => {
     if (selectedSkill) {
@@ -405,37 +465,6 @@ export default function Skills() {
     }
   }, [selectedSkill]);
 
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMouse({ x: e.clientX, y: e.clientY });
-    };
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
-
-  useEffect(() => {
-    const speed = 0.1;
-    let lastTime = performance.now();
-
-    const animate = (time: number) => {
-      const delta = time - lastTime;
-      lastTime = time;
-
-      setFollower((prev) => {
-        const dx = (mouse.x - prev.x) * speed * (delta / 16);
-        const dy = (mouse.y - prev.y) * speed * (delta / 16);
-        return { x: prev.x + dx, y: prev.y + dy };
-      });
-
-      animationRef.current = requestAnimationFrame(animate);
-    };
-
-    animationRef.current = requestAnimationFrame(animate);
-    return () => {
-      if (animationRef.current) cancelAnimationFrame(animationRef.current);
-    };
-  }, [mouse]);
-
   return (
     <div id="skills" className="h-screen flex items-center justify-center">
       <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 p-4 h-screen">
@@ -459,8 +488,6 @@ export default function Skills() {
               className={`fixed inset-0 z-[10000] bg-black/50 backdrop-blur-sm skill-section-backdrop ${
                 isClosing ? "skill-section-backdrop-exit" : ""
               }`}
-              onMouseEnter={handleBackgroundMouseEnter}
-              onMouseLeave={handleBackgroundMouseLeave}
             />
             {showContent && (
               <div
@@ -468,33 +495,11 @@ export default function Skills() {
                   isClosing ? "skill-section-exit" : ""
                 }`}
               >
-                <div
-                  onMouseEnter={handleSkillSectionMouseEnter}
-                  onMouseLeave={handleSkillSectionMouseLeave}
-                >
-                  <SkillSection
-                    {...selectedSkill}
-                    onClose={handleClose}
-                    isClosing={isClosing}
-                  />
-                </div>
-                {isHoveringBackground && !isHoveringSkillSection && (
-                  <div
-                    className="text-[#e0e0c7] z-[10001] italic text-md flex items-center justify-center pointer-events-none transition-opacity duration-300 ease-in-out"
-                    style={{
-                      left: follower.x,
-                      top: follower.y,
-                      position: "fixed",
-                      transform: "translate(-50%, -50%)",
-                      whiteSpace: "nowrap",
-                      fontFamily: "Switzer, sans-serif",
-                      marginTop: "1.25rem",
-                      marginLeft: "-2.5rem",
-                    }}
-                  >
-                    close
-                  </div>
-                )}
+                <SkillSection
+                  {...selectedSkill}
+                  onClose={handleClose}
+                  isClosing={isClosing}
+                />
               </div>
             )}
           </NoStrictPortal>
