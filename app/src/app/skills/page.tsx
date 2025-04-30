@@ -320,7 +320,7 @@ const SkillSection = ({
                 className="italic text-2xl 2xl:text-4xl text-white"
                 style={{ fontFamily: "Switzer, sans-serif" }}
               >
-                {title}
+                {typeof title === "string" ? title : title[lang]}
               </h2>
               <button
                 onClick={onClose}
@@ -345,7 +345,7 @@ const SkillSection = ({
             >
               {desc[lang]}
             </p>
-            {title !== "Otherwise" && (
+            {typeof title !== "object" && (
               <>
                 <div className="mb-20">
                   <h4 className="text-xl 2xl:text-3xl font-semibold mb-4 text-white">
