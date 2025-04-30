@@ -130,3 +130,16 @@ body {
 .skill-section-backdrop-exit {
   animation: fadeOut 0.5s ease-out forwards;
 }
+
+:root {
+  --scrollbar-width: 16px;
+}
+
+body.no-scrollbar {
+  overflow: hidden;
+  padding-right: var(--scrollbar-width);
+}
+
+.skill-section-backdrop {
+  right: var(--scrollbar-width); 
+}

@@ -19,7 +19,7 @@ Ich arbeite am besten mit einem bestehenden Design, da ich mich so direkt auf ei
 Am liebsten entwickle ich mit TypeScript – besonders in React oder Angular. Mit beiden Frameworks habe ich über viele Projekte hinweg tiefe Erfahrung gesammelt und weiss, wie man damit stabile und moderne Frontends umsetzt.`,
     },
 
-    quote: '"Don’t make the user think." - Steve Krug',
+    quote: "„Don’t make the user think.“ - Steve Krug",
     prefered: [
       { name: "HTML", logo: "logos/html.png" },
       { name: "Typescript", logo: "logos/typescript.png" },
@@ -47,7 +47,7 @@ Ich habe die meiste Erfahrung mit Java und Spring Boot – bekannt, stabil, zuve
 Testing und Logging gehören für mich genauso dazu. Nicht nur, weil es meinen Workflow verbessert, sondern weil ich auch meinen Teamkollegen damit das Leben leichter machen will.`,
     },
     quote:
-      '"Code is like humor. When you have to explain it, it’s bad." - Cory House',
+      "„Code is like humor. When you have to explain it, it’s bad.“ - Cory House",
     prefered: [
       { name: "Kotlin", logo: "logos/kotlin.png" },
       { name: "Spring Boot", logo: "logos/spring-boot.png" },
@@ -61,9 +61,17 @@ Testing und Logging gehören für mich genauso dazu. Nicht nur, weil es meinen W
     ],
   },
   {
-    title: "Else",
-    desc: "",
-    quote: "",
+    title: { en: "Otherwise", de: "Weiteres" },
+    desc: {
+      en: ``,
+      de: `Mich faszinieren die vielen Technologien, die die Informatik prägen – besonders, wie unterschiedlich sie gedacht sind und wie sie sich im praktischen Einsatz verhalten. In meiner Ausbildung konnte ich in verschiedenste Bereiche eintauchen und mein Wissen laufend erweitern.
+
+Beispiele dafür sind der Umgang mit Datenbanken, das Verständnis unterschiedlicher Programmierparadigmen – etwa objektorientiert vs. funktional – und als besonderes Highlight das Thema Blockchain. 
+
+Gerade zur Blockchain konnte ich mir nicht nur theoretisches Wissen in Kursen aneignen, sondern dieses auch durch Firmenbesuche mit echten Anwendungsfällen verknüpfen. In Projekten, Aufgaben und kleineren Pitches habe ich mein technisches Verständnis regelmässig eingebracht und vertieft.`,
+    },
+    quote:
+      "„Technology changes, but the need to keep learning never does.“ - Unknown",
     prefered: [],
     extra: [],
   },
@@ -337,7 +345,7 @@ const SkillSection = ({
             >
               {desc[lang]}
             </p>
-            {title !== "Else" && (
+            {title !== "Otherwise" && (
               <>
                 <div className="mb-20">
                   <h4 className="text-xl 2xl:text-3xl font-semibold mb-4 text-white">
@@ -372,36 +380,39 @@ const SkillSection = ({
                 </div>
               </>
             )}
-            {title === "Else" && <p className="text-white">Coming Soon</p>}
           </div>
         </div>
       </div>
       <div
         ref={scrollbarRef}
         className="fixed right-0 top-0 h-full w-[var(--scrollbar-width)] 
-              bg-gray-100 z-[10002] flex-col hidden md:flex"
+        bg-[#3b3b3b] z-[10002] flex-col hidden md:flex"
+        style={{
+          right: isClosing ? `calc(-1 * var(--scrollbar-width))` : "0",
+          transition: "right 0.4s ease",
+        }}
       >
         <div
-          className="w-full h-4 flex items-center justify-center cursor-pointer hover:bg-gray-300"
+          className="w-full h-4 flex items-center justify-center cursor-pointer"
           onClick={() =>
             contentRef.current?.scrollBy({ top: -50, behavior: "smooth" })
           }
         >
-          <div className="w-0 h-0 border-l-[5px] border-r-[5px] border-b-[5px] border-l-transparent border-r-transparent border-b-gray-500" />
+          <div className="w-0 h-0 border-l-[5px] border-r-[5px] border-b-[5px] border-l-transparent border-r-transparent border-b-[#e0e0c7]" />
         </div>
         <div>
           <div
             ref={thumbRef}
-            className="absolute bg-[#8B8B8B] rounded hover:bg-[#636363] active:bg-[#636363]"
+            className="absolute bg-[#e0e0c7] rounded hover:bg-[#c4c4a5] active:bg-[#c4c4a5]"
           />
         </div>
         <div
-          className="w-full h-4 flex items-center justify-center cursor-pointer hover:bg-gray-300 mt-auto"
+          className="w-full h-4 flex items-center justify-center cursor-pointer mt-auto"
           onClick={() =>
             contentRef.current?.scrollBy({ top: 50, behavior: "smooth" })
           }
         >
-          <div className="w-0 h-0 border-l-[5px] border-r-[5px] border-t-[5px] border-l-transparent border-r-transparent border-t-gray-500" />
+          <div className="w-0 h-0 border-l-[5px] border-r-[5px] border-t-[5px] border-l-transparent border-r-transparent border-t-[#e0e0c7]" />
         </div>
       </div>
       {showCloseText && (
@@ -430,8 +441,27 @@ export default function Skills() {
   const [selectedSkill, setSelectedSkill] = useState<any | null>(null);
   const [showContent, setShowContent] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
+  const scrollbarWidth = useRef(0);
+  const { lang } = useLanguage();
 
   useEffect(() => {
+    if (scrollbarWidth.current === 0) {
+      const scrollDiv = document.createElement("div");
+      scrollDiv.style.width = "100px";
+      scrollDiv.style.height = "100px";
+      scrollDiv.style.overflow = "scroll";
+      scrollDiv.style.position = "absolute";
+      scrollDiv.style.top = "-9999px";
+      document.body.appendChild(scrollDiv);
+      scrollbarWidth.current = scrollDiv.offsetWidth - scrollDiv.clientWidth;
+      document.body.removeChild(scrollDiv);
+
+      document.documentElement.style.setProperty(
+        "--scrollbar-width",
+        `${scrollbarWidth.current}px`
+      );
+    }
+
     if (selectedSkill) {
       document.body.classList.add("no-scrollbar");
     } else {
@@ -448,7 +478,6 @@ export default function Skills() {
       setSelectedSkill(null);
       setIsClosing(false);
       setShowContent(false);
-      document.body.style.overflow = "";
       document.body.style.pointerEvents = "";
       const portalRoot = document.getElementById("portal-root");
       if (portalRoot) portalRoot.style.pointerEvents = "none";
@@ -457,7 +486,6 @@ export default function Skills() {
 
   useEffect(() => {
     if (selectedSkill) {
-      document.body.style.overflow = "hidden";
       document.body.style.pointerEvents = "none";
       const portalRoot = document.getElementById("portal-root");
       if (portalRoot) portalRoot.style.pointerEvents = "auto";
@@ -467,16 +495,18 @@ export default function Skills() {
 
   return (
     <div id="skills" className="h-screen flex items-center justify-center">
-      <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 p-4 h-screen">
+      <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6 2xl:gap-14 p-4 h-screen">
         {skills.map((skill, index) => (
           <div
             key={index}
-            className="h-40 md:h-80 2xl:h-3/6 w-2xs 2xl:w-sm transition-all rounded-lg flex justify-center items-center text-5xl 2xl:text-7xl hover:scale-110 cursor-pointer group"
+            className="h-40 md:h-80 2xl:h-3/6 w-2xs 2xl:w-sm transition-all rounded-lg flex justify-center items-center text-6xl 2xl:text-8xl hover:scale-110 cursor-pointer group"
             onClick={() => setSelectedSkill(skill)}
             style={{ fontFamily: "Luxurious Script, sans-serif" }}
           >
             <div className="relative">
-              {skill.title}
+              {typeof skill.title === "string"
+                ? skill.title
+                : skill.title[lang]}
               <span className="absolute bottom-0 left-0 w-0 h-1 2xl:h-1.5 bg-[#CED877] transition-all duration-300 group-hover:w-full rounded-xs"></span>
             </div>
           </div>
@@ -488,6 +518,9 @@ export default function Skills() {
               className={`fixed inset-0 z-[10000] bg-black/50 backdrop-blur-sm skill-section-backdrop ${
                 isClosing ? "skill-section-backdrop-exit" : ""
               }`}
+              style={{
+                right: `calc(var(--scrollbar-width) * ${isClosing ? 0 : 1})`,
+              }}
             />
             {showContent && (
               <div
