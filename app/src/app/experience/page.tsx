@@ -1,9 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { useLanguage } from "../../context/LanguageContext";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence, useSpring } from "framer-motion";
-import { Langar } from "next/font/google";
 
 const workExperience = [
   {
@@ -20,6 +18,7 @@ const workExperience = [
       de: `Im Rahmen meiner IPA entwickelte ich ein neues File-Upload-System für die Risikobewertungs-Applikation der SIX Group AG. Ziel war es, den Upload benutzerfreundlich und effizient umzusetzen. Dafür erstellte ich neue Komponenten im Frontend, entwickelte passende Backend-Endpunkte und erweiterte die Datenbankstruktur. Das Projekt wurde in zehn Arbeitstagen inklusive Dokumentation umgesetzt.`,
     },
     logo: "logos/six.png",
+    link: "https://www.six-group.com/en/home.html",
     techStack: [
       {
         name: "Typescript",
@@ -65,6 +64,7 @@ const workExperience = [
       de: `Seit dem dritten Lehrjahr bin ich Teil des Entwicklerteams im IT-Lab, einer Abteilung der SIX Group AG, die dem HR-Bereich unterstellt ist und für den Betrieb sowie die Weiterentwicklung interner Applikationen verantwortlich ist. Dort konnte ich die Rolle des Lead-Entwicklers für eine interne Applikation zur Risikobewertung übernehmen. In diesem Rahmen habe ich meine Kenntnisse im Frontend-Bereich vertieft, insbesondere durch das Erlernen und den Einsatz des Frameworks Angular. Zudem betreue ich jüngere Lernende (Unterstifte), die ebenfalls im IT-Lab tätig sind, und unterstütze sie bei ihrer fachlichen Entwicklung und Einarbeitung.`,
     },
     logo: "logos/it-lab.png",
+    link: "https://www.six-group.com/en/home.html",
     techStack: [
       {
         name: "Typescript",
@@ -110,6 +110,7 @@ const workExperience = [
       de: `Im zweiten Jahr meiner Lehre war ich bei SDX tätig, der Krypto-Börsenabteilung der SIX Group AG. Dort arbeitete ich als Fullstack-Entwickler im Rahmen eines Kundenprojekts unter der Anleitung meines Teamleads. In dieser Rolle konnte ich insbesondere meine Backend-Kenntnisse vertiefen, indem ich Kotlin mit Spring Boot in Verbindung mit der Blockchain-Plattform R3 Corda einsetzte. Durch das internationale Teamumfeld konnte ich zudem meine sehr guten Englischkenntnisse im täglichen Austausch aktiv nutzen und weiter stärken.`,
     },
     logo: "/logos/sdx.png",
+    link: "https://www.sdx.com/",
     techStack: [
       {
         name: "Typescript",
@@ -147,6 +148,7 @@ const workExperience = [
       de: `Bei TIE International absolvierte ich das Basislehrjahr, in dem ich die Grundlagen der Programmierung, agiler Zusammenarbeit und Teamarbeit erlernte. Das Wissen konnte ich direkt in realen Kundenprojekten anwenden und vertiefen. Ausserdem wurde ich in die Blockchain-Technologie eingeführt und entwickelte eine Konsolenanwendung, die die Grundfunktionen einer Krypto-Wallet simulierte.`,
     },
     logo: "logos/tie.png",
+    link: "https://tie.international/en/",
     techStack: [
       {
         name: "Typescript",
@@ -280,6 +282,7 @@ interface ExperienceSectionProps {
     range: { [key: string]: string };
     description: { [key: string]: string };
     logo: string;
+    link: string;
     techStack?: Tech[];
   }[];
   highlightColor: string;
@@ -454,11 +457,13 @@ const ExperienceSection = ({
             >
               <div className="h-full pl-6 pr-6 pb-6 flex flex-col">
                 <div className="flex items-center gap-4 mb-4">
-                  <img
-                    src={experiences[currentIndex].logo}
-                    alt="Logo"
-                    className="w-12 h-12 md:w-14 md:h-14 object-contain"
-                  />
+                  <a href={experiences[currentIndex].link}>
+                    <img
+                      src={experiences[currentIndex].logo}
+                      alt="Logo"
+                      className="w-12 h-12 md:w-14 md:h-14 object-contain"
+                    />
+                  </a>
                   <div>
                     <div className="text-sm md:text-base lg:text-xl font-bold">
                       {experiences[currentIndex].title[lang]}
