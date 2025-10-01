@@ -7,13 +7,6 @@ const slow = { mass: 10, tension: 200, friction: 50 };
 const trans = (x: number, y: number) =>
   `translate3d(${x}px,${y}px,0) translate3d(-50%,-50%,0)`;
 
-// Create a proper animated component with children
-const AnimatedBlob = animated.div as React.FC<{
-  children?: React.ReactNode;
-  style?: React.CSSProperties;
-  className?: string;
-}>;
-
 export default function BlobCursor({
   blobType,
   fillColor,
@@ -22,43 +15,65 @@ export default function BlobCursor({
   fillColor: string;
 }) {
   const [hasMoved, setHasMoved] = useState(false);
-  const [position, setPosition] = useState<[number, number]>([0, 0]);
   const [isVisible, setIsVisible] = useState(true);
-  const [isCursorInViewport, setIsCursorInViewport] = useState(true);
-  const [lastCursorPosition, setLastCursorPosition] = useState<
-    [number, number]
-  >([0, 0]);
-  const [oElementSize, setOElementSize] = useState({ width: 0, height: 0 });
+  const [letterSize, setLetterSize] = useState({ width: 0, height: 0 });
+
   const sectionsRef = useRef<NodeListOf<HTMLElement> | null>(null);
-  const oElementRef = useRef<HTMLElement | null>(null);
+  const currentPositionRef = useRef<[number, number]>([0, 0]);
+  const isInitializedRef = useRef(false);
+  const lastMousePositionRef = useRef<[number, number]>([0, 0]);
+
+  // Get initial position from "o" element
+  const getInitialPosition = (): [number, number] => {
+    if (typeof window === "undefined") return [0, 0];
+
+    const oElement = document.getElementById("o");
+    if (oElement) {
+      const rect = oElement.getBoundingClientRect();
+      const x = rect.left + rect.width / 2 + 5;
+      const y = rect.top + rect.height / 2 + 10;
+      return [x, y];
+    }
+    return [window.innerWidth / 2, window.innerHeight / 2];
+  };
+
+  // Set the initial position
+  const initialPosition = getInitialPosition();
+  currentPositionRef.current = initialPosition;
+  lastMousePositionRef.current = [
+    initialPosition[0] - 5,
+    initialPosition[1] - 10,
+  ];
 
   const [trail, api] = useTrail(3, (i) => ({
-    xy: position,
-    opacity: 1,
+    xy: initialPosition,
     config: i === 0 ? fast : slow,
   }));
 
   // Get position with consistent offsets
   const getPositionWithOffsets = useCallback(
     (x: number, y: number): [number, number] => {
-      return [x + 5, y + 10]; // Apply consistent offsets
+      return [x + 5, y + 10];
     },
     []
   );
 
   // Get and update the size of the "o" element
-  const updateOElementSize = useCallback(() => {
-    oElementRef.current = document.getElementById("o");
-    if (oElementRef.current) {
-      const rect = oElementRef.current.getBoundingClientRect();
-      setOElementSize({ width: rect.width, height: rect.height });
+  const updateLetterSize = useCallback(() => {
+    const oElement = document.getElementById("o");
+    if (oElement) {
+      const rect = oElement.getBoundingClientRect();
+      const baseHeight = rect.height * (7 / 30);
+      setLetterSize({
+        width: baseHeight,
+        height: baseHeight,
+      });
     }
   }, []);
 
-  // Calculate sizes based on "o" element dimensions - use one-third scale
+  // Calculate sizes based on "o" element dimensions
   const getSizes = useCallback(() => {
-    if (oElementSize.height === 0) {
-      // Default sizes if "o" element not found
+    if (letterSize.height === 0) {
       return [
         { width: 60, height: 60 },
         { width: 125, height: 125 },
@@ -66,15 +81,12 @@ export default function BlobCursor({
       ];
     }
 
-    // Use one-third of the "o" element height as base
-    const baseHeight = oElementSize.height * (7 / 30); // One-third of o's height
-
     return [
-      { width: baseHeight * 0.8, height: baseHeight * 0.8 }, // Smallest: 80% of base
-      { width: baseHeight * 1.6, height: baseHeight * 1.6 }, // Medium: 160% of base
-      { width: baseHeight * 1.2, height: baseHeight * 1.2 }, // Large: 120% of base
+      { width: letterSize.width * 0.8, height: letterSize.height * 0.8 },
+      { width: letterSize.width * 1.6, height: letterSize.height * 1.6 },
+      { width: letterSize.width * 1.2, height: letterSize.height * 1.2 },
     ];
-  }, [oElementSize]);
+  }, [letterSize]);
 
   // Calculate pseudo-element styles based on sizes
   const getPseudoStyles = useCallback(
@@ -89,17 +101,12 @@ export default function BlobCursor({
     []
   );
 
-  // Check if cursor is in viewport
-  const checkCursorInViewport = useCallback((x: number, y: number) => {
-    const inViewport =
-      x >= 0 && x <= window.innerWidth && y >= 0 && y <= window.innerHeight;
-    setIsCursorInViewport(inViewport);
-    return inViewport;
-  }, []);
-
   // Check if cursor is in allowed section
   const checkCursorInAllowedSection = useCallback((x: number, y: number) => {
-    if (!sectionsRef.current) return false;
+    // If no sections are defined, allow cursor everywhere
+    if (!sectionsRef.current || sectionsRef.current.length === 0) {
+      return true;
+    }
 
     for (const section of Array.from(sectionsRef.current)) {
       const rect = section.getBoundingClientRect();
@@ -115,56 +122,39 @@ export default function BlobCursor({
     return false;
   }, []);
 
-  // Update visibility based on current cursor position
-  const updateVisibility = useCallback(
+  // Update position and animate
+  const updatePosition = useCallback(
     (x: number, y: number) => {
-      const inViewport = checkCursorInViewport(x, y);
-      const inAllowedSection = checkCursorInAllowedSection(x, y);
-
-      const shouldBeVisible = inViewport && inAllowedSection;
-      const body = document.body;
-
-      if (shouldBeVisible) {
-        if (!isVisible) {
-          setIsVisible(true);
-          api.start({ xy: getPositionWithOffsets(x, y), opacity: 1 });
-        } else {
-          api.start({ xy: getPositionWithOffsets(x, y), opacity: 1 });
-        }
-        body.classList.add("cursor-none");
-      } else {
-        if (isVisible) {
-          setIsVisible(false);
-          api.start({ opacity: 0 });
-        }
-        body.classList.remove("cursor-none");
-      }
+      const [newX, newY] = getPositionWithOffsets(x, y);
+      currentPositionRef.current = [newX, newY];
+      lastMousePositionRef.current = [x, y];
+      api.start({ xy: [newX, newY] });
     },
-    [
-      api,
-      isVisible,
-      checkCursorInViewport,
-      checkCursorInAllowedSection,
-      getPositionWithOffsets,
-    ]
+    [api, getPositionWithOffsets]
   );
 
-  // Update position based on "o" element
-  const updatePosition = useCallback(() => {
-    updateOElementSize(); // Update the size first
-    oElementRef.current = document.getElementById("o");
-    if (oElementRef.current) {
-      const rect = oElementRef.current.getBoundingClientRect();
-      const x = rect.left + rect.width / 2;
-      const y = rect.top + rect.height / 2;
-      const [offsetX, offsetY] = getPositionWithOffsets(x, y);
-      setPosition([offsetX, offsetY]);
-
-      if (!hasMoved) {
-        api.start({ xy: [offsetX, offsetY], opacity: isVisible ? 1 : 0 });
+  // Update visibility based on current mouse position
+  const updateVisibility = useCallback(
+    (shouldBeVisible: boolean) => {
+      if (shouldBeVisible && !isVisible) {
+        setIsVisible(true);
+        document.documentElement.style.cursor = "none";
+        document.body.style.cursor = "none";
+      } else if (!shouldBeVisible && isVisible) {
+        setIsVisible(false);
+        document.documentElement.style.cursor = "auto";
+        document.body.style.cursor = "auto";
       }
-    }
-  }, [api, hasMoved, isVisible, getPositionWithOffsets, updateOElementSize]);
+    },
+    [isVisible]
+  );
+
+  // Check visibility based on current mouse position
+  const checkVisibility = useCallback(() => {
+    const [lastX, lastY] = lastMousePositionRef.current;
+    const inAllowedSection = checkCursorInAllowedSection(lastX, lastY);
+    return inAllowedSection;
+  }, [checkCursorInAllowedSection]);
 
   // Handle mouse movement
   const handleMove = useCallback(
@@ -173,76 +163,86 @@ export default function BlobCursor({
 
       const x = e.clientX;
       const y = e.clientY;
-      const [offsetX, offsetY] = getPositionWithOffsets(x, y);
-      setPosition([offsetX, offsetY]);
-      setLastCursorPosition([x, y]);
 
-      updateVisibility(x, y);
+      updatePosition(x, y);
+
+      // Update visibility based on current position
+      const shouldBeVisible = checkVisibility();
+      updateVisibility(shouldBeVisible);
     },
-    [hasMoved, updateVisibility, getPositionWithOffsets]
+    [hasMoved, updatePosition, checkVisibility, updateVisibility]
   );
 
-  // Handle scroll to update "o" position and check section visibility
+  // Handle scroll - check visibility when scrolling
   const handleScroll = useCallback(() => {
-    updatePosition();
-
-    // Check visibility based on last known cursor position
-    const [x, y] = lastCursorPosition;
-    updateVisibility(x, y);
-
-    // If cursor hasn't moved yet, check at "o" element position
-    if (!hasMoved && oElementRef.current) {
-      const rect = oElementRef.current.getBoundingClientRect();
-      const oX = rect.left + rect.width / 2;
-      const oY = rect.top + rect.height / 2;
-      updateVisibility(oX, oY);
+    // Only update position based on "o" element if cursor hasn't moved yet
+    if (!hasMoved) {
+      const initialPos = getInitialPosition();
+      updatePosition(initialPos[0] - 5, initialPos[1] - 10);
     }
-  }, [updatePosition, lastCursorPosition, hasMoved, updateVisibility]);
 
+    // Check visibility based on last known mouse position
+    const shouldBeVisible = checkVisibility();
+    updateVisibility(shouldBeVisible);
+
+    updateLetterSize();
+  }, [
+    hasMoved,
+    updatePosition,
+    checkVisibility,
+    updateVisibility,
+    updateLetterSize,
+  ]);
+
+  // Initialize once on mount
   useEffect(() => {
-    // Get all sections where the blob should be visible
+    if (isInitializedRef.current) return;
+    isInitializedRef.current = true;
+
+    console.log("Initializing blob at position:", initialPosition);
+
+    // Get sections
     sectionsRef.current = document.querySelectorAll("[data-blob-active]");
 
-    // Initial position update
-    updatePosition();
+    // Log for debugging
+    console.log(
+      "Found sections with data-blob-active:",
+      sectionsRef.current?.length || 0
+    );
+
+    // Check initial visibility
+    const shouldBeVisible = checkVisibility();
+    updateVisibility(shouldBeVisible);
+
+    updateLetterSize();
 
     // Add event listeners
     window.addEventListener("mousemove", handleMove);
     window.addEventListener("scroll", handleScroll);
     window.addEventListener("resize", handleScroll);
 
-    // Check if cursor leaves viewport
-    document.addEventListener("mouseleave", () => {
-      setIsCursorInViewport(false);
-      setIsVisible(false);
-      api.start({ opacity: 0 });
-    });
-
-    // Check if cursor enters viewport
-    document.addEventListener("mouseenter", (e) => {
-      setIsCursorInViewport(true);
-      if (e instanceof MouseEvent) {
-        updateVisibility(e.clientX, e.clientY);
-      }
-    });
-
     return () => {
       window.removeEventListener("mousemove", handleMove);
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleScroll);
-      document.removeEventListener("mouseleave", () => {});
-      document.removeEventListener("mouseenter", () => {});
-    };
-  }, [handleMove, handleScroll, updatePosition, api, updateVisibility]);
 
-  // Calculate sizes and pseudo styles dynamically
+      // Restore cursor on cleanup
+      document.documentElement.style.cursor = "auto";
+      document.body.style.cursor = "auto";
+    };
+  }, []);
+
   const sizes = getSizes();
   const pseudoStyles = getPseudoStyles(sizes);
 
   return (
     <div
       className="fixed top-0 left-0 w-full h-full"
-      style={{ zIndex: 100, pointerEvents: "none" }}
+      style={{
+        zIndex: 100,
+        pointerEvents: "none",
+        cursor: "none",
+      }}
     >
       <svg style={{ position: "absolute", width: 0, height: 0 }}>
         <filter id="blob">
@@ -254,7 +254,7 @@ export default function BlobCursor({
         </filter>
       </svg>
       <div
-        className="absolute w-full h-full overflow-hidden bg-transparent select-none cursor-default mr-5"
+        className="absolute w-full h-full overflow-hidden bg-transparent select-none cursor-default"
         style={{
           filter: 'url("#blob")',
           WebkitTouchCallout: "none",
@@ -262,21 +262,24 @@ export default function BlobCursor({
           KhtmlUserSelect: "none",
           MozUserSelect: "none",
           msUserSelect: "none",
+          cursor: "none",
         }}
       >
         {trail.map((props, index) => (
-          <AnimatedBlob
+          <animated.div
             key={index}
             className="absolute shadow-[10px_10px_5px_0_rgba(0,0,0,0.75)]"
             style={{
-              transform: props.xy.to(trans as any),
-              opacity: props.opacity as any,
+              transform: props.xy.to(
+                trans
+              ) as unknown as React.CSSProperties["transform"],
               width: `${sizes[index].width}px`,
               height: `${sizes[index].height}px`,
-              willChange: "transform, opacity",
+              willChange: "transform",
               borderRadius: blobType === "circle" ? "50%" : "0%",
               backgroundColor: fillColor,
               pointerEvents: "none",
+              cursor: "none",
             }}
           >
             <div
@@ -290,7 +293,7 @@ export default function BlobCursor({
                 background: "rgba(255,255,255,0.8)",
               }}
             />
-          </AnimatedBlob>
+          </animated.div>
         ))}
       </div>
     </div>
