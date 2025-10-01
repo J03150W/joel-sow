@@ -6,7 +6,7 @@ import { useAudioPlayer } from "./audioPlayer";
 import Sidebar from "./sidebar";
 
 function useSectionObserver(setActiveSection: (id: string) => void) {
-  const observer = useRef<IntersectionObserver>(null);
+  const observer = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
     const sections = document.querySelectorAll("div[id]");
