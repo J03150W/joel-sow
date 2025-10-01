@@ -8,7 +8,6 @@ import Timeline from "../components/timeline";
 import Skills from "../skills/page";
 import { TextReveal } from "@/components/magicui/text-reveal";
 import Ballpit from "@/components/Ballpit/Ballpit";
-import DecryptedText from "@/components/DecryptedText";
 import SplitText from "@/components/SplitText/SplitText";
 import Waves from "@/components/Waves/Waves";
 import Silk from "@/components/Silk/Silk";
