@@ -322,11 +322,11 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
         style={{ fontFamily: "Switzer, sans-serif" }}
       >
         <span>{title}</span>
-        <p className="text-sm 2xl:text-xl">{range}</p>
+        <p className="text-md 2xl:text-xl">{range}</p>
       </motion.h3>
 
       <div className="mt-3 2xl:mt-6">
-        <p className="text-white/70 text-sm 2xl:text-lg leading-relaxed">
+        <p className="text-white/70 text-md 2xl:text-lg leading-relaxed">
           {content}
         </p>
       </div>

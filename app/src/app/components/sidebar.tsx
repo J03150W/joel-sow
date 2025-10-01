@@ -18,20 +18,6 @@ export default function Sidebar({ activeSection }: Props) {
     { id: "about", label: { en: "About", de: "Über mich" } },
   ];
 
-  // Get cursor color based on active section
-  const getCursorColor = () => {
-    switch (activeSection) {
-      case "experience":
-        return "#febe0b"; // blue-500
-      case "skills":
-        return "#8b5cf6"; // violet-500
-      case "about":
-        return "#ff0000"; // amber-500
-      default:
-        return "#22c55e"; // green-500
-    }
-  };
-
   return (
     <>
       <div className="-mt-16"></div>
