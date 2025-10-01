@@ -16,7 +16,7 @@
     "@mantine/core": "^8.0.0",
     "@mantine/hooks": "^8.0.0",
     "@radix-ui/react-slot": "^1.2.2",
-    "@react-spring/web": "^9.7.5",
+    "@react-spring/web": "^10.0.3",
     "@react-three/drei": "^10.0.7",
     "@react-three/fiber": "^9.1.2",
     "@studio-freight/react-lenis": "^0.0.47",
