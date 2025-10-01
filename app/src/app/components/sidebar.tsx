@@ -1,4 +1,5 @@
 import { useLanguage } from "@/context/LanguageContext";
+import Cursor from "./cursor";
 
 type Props = {
   activeSection: string;
@@ -18,9 +19,28 @@ export default function Sidebar({ activeSection }: Props) {
     { id: "about", label: { en: "About", de: "Über mich" } },
   ];
 
+  // Get cursor color based on active section
+  const getCursorColor = () => {
+    switch (activeSection) {
+      case "experience":
+        return "#febe0b"; // blue-500
+      case "skills":
+        return "#8b5cf6"; // violet-500
+      case "about":
+        return "#ff0000"; // amber-500
+      default:
+        return "#22c55e"; // green-500
+    }
+  };
+
   return (
-    <div
-      className={`w-full transition-opacity duration-150
+    <>
+      <div className="-mt-16">
+        {/*<Cursor size={10} color={getCursorColor()} delay={0.1} opacity={0.9} />*/}
+        <Cursor size={10} color={"#ffffff"} delay={0.1} opacity={0} />
+      </div>
+      <div
+        className={` transition-opacity duration-150
       ${
         isVisible
           ? "opacity-100 backdrop-blur-md bg-[#EEEDE9]/50"
@@ -28,9 +48,9 @@ export default function Sidebar({ activeSection }: Props) {
       }
       md:fixed md:top-16 md:left-0 md:bg-transparent md:backdrop-blur-none z-40
     `}
-    >
-      <ul
-        className={`
+      >
+        <ul
+          className={`
           flex
           flex-row
           md:flex-col
@@ -39,20 +59,21 @@ export default function Sidebar({ activeSection }: Props) {
           md:space-y-4
           pl-4 py-2
         `}
-      >
-        {navItems.map(({ id, label }) => (
-          <li
-            key={id}
-            className="italic text-sm text-[#3e3e2e]"
-            style={{ fontFamily: "Switzer, sans-serif" }}
-          >
-            <a href={`#${id}`}>
-              {label[lang]}
-              {activeSection === id && <span className="ml-2">{"<"}</span>}
-            </a>
-          </li>
-        ))}
-      </ul>
-    </div>
+        >
+          {navItems.map(({ id, label }) => (
+            <li
+              key={id}
+              className="italic text-sm text-white"
+              style={{ fontFamily: "Switzer, sans-serif" }}
+            >
+              <a href={`#${id}`}>
+                {label[lang]}
+                {activeSection === id && <span className="ml-2">{"<"}</span>}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </>
   );
 }

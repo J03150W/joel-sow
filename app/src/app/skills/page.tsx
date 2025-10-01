@@ -1,6 +1,6 @@
 "use client";
 import { useLanguage } from "@/context/LanguageContext";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import NoStrictPortal from "../components/noStrictPortal";
 
 const skills = [
@@ -9,12 +9,12 @@ const skills = [
     desc: {
       en: `When developing frontends, my focus is on creating user-friendly and intuitive interfaces. Good design shouldn't make users think – it should feel natural and effortless.
 
-I work best with an existing design, as it allows me to focus directly on clean and efficient implementation. If no design is provided, I create a suitable interface myself. My background in design helps me build solutions that are both functional and visually appealing.
+I work best with an existing design, as it allows me to focus directly on clean and efficient implementation. If no design is provided, I create a suitable interface myself. My strong sense for design helps me build solutions that are not only functional but also visually appealing.
 
 I prefer working with TypeScript – especially in React or Angular. I've gained extensive experience with both frameworks through a wide range of projects and know how to build stable, modern frontends with them.`,
       de: `Beim Frontend-Entwickeln ist mir wichtig, eine benutzerfreundliche und intuitive Oberfläche zu schaffen. Ein gutes Design soll den Nutzer nicht zum Nachdenken bringen – es soll sich einfach natürlich anfühlen.
 
-Ich arbeite am besten mit einem bestehenden Design, da ich mich so direkt auf eine saubere und effiziente Umsetzung konzentrieren kann. Ist kein Design vorhanden, entwickle ich eigenständig ein passendes Interface. Mein gestalterischer Hintergrund unterstützt mich dabei, funktionale und visuell ansprechende Lösungen zu schaffen.
+Ich arbeite am besten mit einem bestehenden Design, da ich mich so direkt auf eine saubere und effiziente Umsetzung konzentrieren kann. Ist kein Design vorhanden, entwickle ich eigenständig ein passendes Interface. Mein gutes Gespür für Gestaltung hilft mir dabei, Lösungen zu schaffen, die nicht nur funktionieren, sondern auch visuell überzeugen.
 
 Am liebsten entwickle ich mit TypeScript – besonders in React oder Angular. Mit beiden Frameworks habe ich über viele Projekte hinweg tiefe Erfahrung gesammelt und weiss, wie man damit stabile und moderne Frontends umsetzt.`,
     },
@@ -441,7 +441,7 @@ const SkillSection = ({
   );
 };
 
-export default function Skills() {
+function Skills() {
   const [selectedSkill, setSelectedSkill] = useState<any | null>(null);
   const [showContent, setShowContent] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
@@ -542,6 +542,116 @@ export default function Skills() {
           </NoStrictPortal>
         )}
       </div>
+    </div>
+  );
+}
+
+////////
+
+export default function SkillsPage() {
+  const { lang } = useLanguage();
+  const [hoveredSkills, setHoveredSkills] = useState<Record<string, boolean>>(
+    {}
+  );
+
+  const skillItems = [
+    {
+      title: "UI/UX DESIGN",
+      description:
+        "Creating intuitive and visually appealing user interfaces with a focus on user experience and modern design principles.",
+    },
+    {
+      title: "FRONTEND DEVELOPMENT",
+      description:
+        "Building responsive and interactive web applications using React, TypeScript, and modern CSS frameworks like Tailwind.",
+    },
+    {
+      title: "BACKEND DEVELOPMENT",
+      description:
+        "Developing robust server-side applications with Java, Spring Boot, Kotlin, and ensuring clean, maintainable code architecture.",
+    },
+    {
+      title: "DATABASE MANAGEMENT",
+      description:
+        "Designing and optimizing relational and NoSQL databases, writing efficient queries, and ensuring data integrity.",
+    },
+    {
+      title: "PRESENTING & TEAMWORK",
+      description:
+        "Communicating technical concepts clearly, leading presentations, and collaborating effectively in agile development teams.",
+    },
+    {
+      title: "LANGUAGES",
+      description:
+        "Fluent in multiple programming languages and human languages, adapting communication style for diverse audiences and technical contexts.",
+    },
+  ];
+
+  const getCardPosition = (index: number) => {
+    const positions = [
+      { x: "-30%", y: "50%" }, // UI/UX DESIGN - top left
+      { x: "95%", y: "40%" }, // FRONTEND - top right
+      { x: "0%", y: "40%" }, // BACKEND - middle left
+      { x: "100%", y: "75%" }, // DATABASE - bottom right
+      { x: "5%", y: "60%" }, // PRESENTING - top center
+      { x: "130%", y: "45%" }, // LANGUAGES - bottom center
+    ];
+    return positions[index] || { x: "50%", y: "50%" };
+  };
+
+  const handleMouseEnter = (skillTitle: string) => {
+    setHoveredSkills((prev) => ({
+      ...prev,
+      [skillTitle]: true,
+    }));
+  };
+
+  const handleMouseLeave = (skillTitle: string) => {
+    setHoveredSkills((prev) => ({
+      ...prev,
+      [skillTitle]: false,
+    }));
+  };
+
+  return (
+    <div
+      id="skills"
+      className="h-[150vh] flex flex-col items-center italic justify-center text-[70px] 2xl:text-[100px] font-bold text-white relative"
+      style={{ fontFamily: "Switzer, sans-serif" }}
+    >
+      {skillItems.map((skill, index) => (
+        <div key={index} className="relative">
+          <p
+            className="cursor-pointer transition-colors duration-200 hover:text-gray-300"
+            onMouseEnter={() => handleMouseEnter(skill.title)}
+            onMouseLeave={() => handleMouseLeave(skill.title)}
+          >
+            {skill.title}
+          </p>
+
+          {/* Individual Hover Card for each skill */}
+          <div
+            className={`absolute bg-white h-70 w-55 z-50 pointer-events-none flex flex-col justify-center p-6 transition-all duration-300 ${
+              hoveredSkills[skill.title]
+                ? "opacity-100 scale-100"
+                : "opacity-0 scale-95"
+            }`}
+            style={{
+              left: getCardPosition(index).x,
+              top: getCardPosition(index).y,
+              transform: "translate(-50%, -50%)",
+              visibility: hoveredSkills[skill.title] ? "visible" : "hidden",
+            }}
+          >
+            <h3 className="text-black text-lg font-bold mb-3 text-center">
+              {skill.title}
+            </h3>
+            <p className="text-black text-sm font-normal text-center leading-relaxed">
+              {skill.description}
+            </p>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

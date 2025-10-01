@@ -31,19 +31,21 @@ export default function Navbar() {
 
   return (
     <div
-      className="h-16 flex bg-[#EEEDE9]/50 backdrop-blur-md items-center justify-between px-4 w-full z-50"
+      className="h-16 flex items-center justify-between px-4 w-full z-50"
+      //className="h-16 flex bg-[#EEEDE9]/50 backdrop-blur-md items-center justify-between px-4 w-full z-50"
+      //className="h-16 flex items-center justify-between px-4 w-full z-50"
       style={{ marginRight: needsMargin ? "16px" : "0" }}
     >
       <div className="w-full max-w-screen-xl mx-auto flex justify-between items-center">
         <Link
           href="#home"
-          className="text-2xl italic text-[#3e3e2e] absolute left-4"
+          className="text-2xl italic text-white absolute left-4"
           style={{ fontFamily: "Switzer, sans-serif" }}
         >
           joel sow
         </Link>
 
-        <div className="absolute right-4">
+        {/*<div className="absolute right-4">
           <button onClick={toggleLangMenu}>
             <Image
               className="rounded-full object-cover"
@@ -83,7 +85,7 @@ export default function Navbar() {
               </button>
             </div>
           )}
-        </div>
+        </div>*/}
       </div>
     </div>
   );

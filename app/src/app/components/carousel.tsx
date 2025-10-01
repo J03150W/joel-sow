@@ -2,7 +2,6 @@
 import { useState } from "react";
 
 const media = [
-  { type: "image", src: "/media/lego.jpeg" },
   { type: "image", src: "/media/luna.jpeg" },
   { type: "image", src: "/media/football.png" },
   { type: "image", src: "/media/sunset.jpeg" },
@@ -11,24 +10,19 @@ const media = [
 
 export default function Carousel() {
   const [index, setIndex] = useState(0);
-
-  const prev = () =>
-    setIndex((prev) => (prev - 1 + media.length) % media.length);
-  const next = () => setIndex((prev) => (prev + 1) % media.length);
-
   const current = media[index];
 
   return (
-    <div className="flex flex-col items-center gap-2 w-full max-w-md mx-auto">
-      <div className="flex items-center gap-4 w-full">
+    <div className="flex flex-col items-center justify-center w-full">
+      <div className="flex flex-col md:flex-row items-center gap-4 w-full max-w-[14rem] md:max-w-[24rem] 2xl:max-w-[32rem] mx-auto">
         <button
-          onClick={prev}
-          className="text-[#4b4b3b] text-3xl font-bold px-2 py-1 rounded hover:scale-110 transition-transform"
+          className="text-[#4b4b3b] text-2xl md:text-3xl font-bold px-2 py-1 hover:scale-110 transition-transform"
+          onClick={() => setIndex((index - 1 + media.length) % media.length)}
         >
           &lt;
         </button>
 
-        <div className="relative aspect-[3/4] w-full rounded-2xl overflow-hidden flex items-center justify-center bg-white shadow-lg">
+        <div className="relative w-full aspect-[3/4] max-h-[32rem] overflow-hidden flex items-center justify-center bg-white shadow-lg">
           {current.type === "image" ? (
             <img
               src={current.src}
@@ -48,8 +42,8 @@ export default function Carousel() {
         </div>
 
         <button
-          onClick={next}
-          className="text-[#4b4b3b] text-3xl font-bold px-2 py-1 rounded hover:scale-110 transition-transform"
+          className="text-[#4b4b3b] text-2xl md:text-3xl font-bold px-2 py-1 hover:scale-110 transition-transform"
+          onClick={() => setIndex((index + 1) % media.length)}
         >
           &gt;
         </button>

@@ -1,134 +1,168 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useLanguage } from "@/context/LanguageContext";
+import BlobCursor from "@/components/BlobCursor/BlobCursor";
+import SplitText from "@/components/SplitText/SplitText";
 import Template from "./components/template";
-import Experience from "./experience/page";
-import About from "./about/page";
-import Skills from "./skills/page";
-import { FlipWords } from "@/components/ui/flip-words";
+import Timeline from "./components/timeline";
+import Loader from "./components/loader";
 
-export default function Home() {
-  const [mouse, setMouse] = useState({ x: 0, y: 0 });
-  const [follower, setFollower] = useState({ x: 0, y: 0 });
-  const [isHoveringTitle, setIsHoveringTitle] = useState(false);
-  const [showScrollDown, setShowScrollDown] = useState(true);
-  const welcomeSectionRef = useRef<HTMLDivElement>(null);
-  const animationRef = useRef<number | null>(null);
-  const [isSmallScreen, setIsSmallScreen] = useState(false);
+export default function NewPage() {
+  const { lang } = useLanguage();
+  const [showLoader, setShowLoader] = useState(true);
+  const [fadeOut, setFadeOut] = useState(false);
+  const backgroundRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  const [scrollY, setScrollY] = useState(0);
+  const lastScrollY = useRef(0);
+  const isScrollingDown = useRef(true);
+
+  const animRef = useRef({ currentScroll: 0 });
 
   useEffect(() => {
-    const checkScreenSize = () => {
-      setIsSmallScreen(window.innerWidth <= 768);
-    };
-
-    checkScreenSize();
-    window.addEventListener("resize", checkScreenSize);
-    return () => window.removeEventListener("resize", checkScreenSize);
+    function onScroll() {
+      const currentScrollY = window.scrollY;
+      isScrollingDown.current = currentScrollY > lastScrollY.current;
+      lastScrollY.current = currentScrollY;
+      setScrollY(currentScrollY);
+    }
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMouse({ x: e.clientX, y: e.clientY });
-    };
+    let animationFrameId: number;
 
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
+    function animate() {
+      const lerpFactor = isScrollingDown.current ? 0.03 : 0.08;
+
+      animRef.current.currentScroll +=
+        (scrollY - animRef.current.currentScroll) * lerpFactor;
+
+      const scroll = animRef.current.currentScroll;
+
+      const maxScroll = 800;
+      const progress = Math.min(scroll / maxScroll, 1);
+
+      const maxTranslateX = 100;
+      const maxTranslateY = -100;
+      const maxScaleChange = 0.3;
+      const maxRotate = 10;
+
+      const translateX = Math.round(maxTranslateX * progress);
+      const translateY = Math.round(maxTranslateY * progress);
+      const scale = 1 - maxScaleChange * progress;
+      const rotate = -maxRotate * progress;
+
+      const transform = `
+        translate3d(${translateX}px, ${translateY}px, 0)
+        scale(${scale})
+        rotate(${rotate}deg)
+      `;
+
+      if (backgroundRef.current) {
+        backgroundRef.current.style.transform = transform;
+        backgroundRef.current.style.transformOrigin = "top left";
+        backgroundRef.current.style.willChange = "transform";
+        backgroundRef.current.style.backfaceVisibility = "hidden";
+        backgroundRef.current.style.transformStyle = "preserve-3d";
+      }
+
+      if (contentRef.current) {
+        contentRef.current.style.transform = transform;
+        contentRef.current.style.transformOrigin = "top left";
+        contentRef.current.style.willChange = "transform";
+        contentRef.current.style.backfaceVisibility = "hidden";
+        contentRef.current.style.transformStyle = "preserve-3d";
+      }
+
+      animationFrameId = requestAnimationFrame(animate);
+    }
+
+    animate();
+
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [scrollY]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setFadeOut(true);
+      setTimeout(() => setShowLoader(false), 1000);
+    }, 1500);
+
+    return () => clearTimeout(timer);
   }, []);
-
-  useEffect(() => {
-    const speed = 0.1;
-    let lastTime = performance.now();
-
-    const animate = (time: number) => {
-      const delta = time - lastTime;
-      lastTime = time;
-
-      setFollower((prev) => {
-        const dx = (mouse.x - prev.x) * speed * (delta / 16);
-        const dy = (mouse.y - prev.y) * speed * (delta / 16);
-        return {
-          x: prev.x + dx,
-          y: prev.y + dy,
-        };
-      });
-
-      animationRef.current = requestAnimationFrame(animate);
-    };
-
-    animationRef.current = requestAnimationFrame(animate);
-    return () => {
-      if (animationRef.current) cancelAnimationFrame(animationRef.current);
-    };
-  }, [mouse]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!welcomeSectionRef.current) return;
-
-      const rect = welcomeSectionRef.current.getBoundingClientRect();
-      const isVisible =
-        rect.top >= -100 && rect.top <= window.innerHeight * 0.25;
-
-      setShowScrollDown(isVisible && !isHoveringTitle);
-    };
-
-    handleScroll();
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [isHoveringTitle]);
 
   return (
     <Template>
-      <div
-        className={`text-[#3e3e2e] italic text-md flex items-center justify-center pointer-events-none z-50 transition-opacity duration-300 ease-in-out ${
-          showScrollDown ? "opacity-100" : "opacity-0"
-        } ${isSmallScreen ? "fixed bottom-2 left-2 text-xl italic" : ""}`}
-        style={
-          isSmallScreen
-            ? {
-                fontFamily: "Switzer, sans-serif",
-              }
-            : {
-                left: follower.x,
-                top: follower.y,
-                position: "fixed",
-                transform: "translate(-50%, -50%)",
-                whiteSpace: "nowrap",
-                fontFamily: "Switzer, sans-serif",
-                marginTop: "1.25rem",
-                marginLeft: "3.75rem",
-              }
-        }
-      >
-        scroll down
-      </div>
-
-      <div
-        id="home"
-        ref={welcomeSectionRef}
-        className="luxurious w-screen h-screen flex justify-center items-center pb-36 text-5xl lg:text-9xl 2xl:text-[180px] bg-[#EEEDE9]"
-        onMouseEnter={() => setShowScrollDown(true)}
-        onMouseLeave={() => {
-          if (!welcomeSectionRef.current) return;
-          const rect = welcomeSectionRef.current.getBoundingClientRect();
-          const isVisible =
-            rect.top >= -100 && rect.top <= window.innerHeight * 0.25;
-          setShowScrollDown(isVisible);
-        }}
-      >
+      <div className="relative">
         <div
-          className="md:w-4/6 md:ml-0 ml-8 w-full justify-center"
-          onMouseEnter={() => setIsHoveringTitle(true)}
-          onMouseLeave={() => setIsHoveringTitle(false)}
-          style={{ fontFamily: "Luxurious Script, sans-serif" }}
+          id="home"
+          data-blob-active
+          className="relative z-20 flex flex-col h-screen overflow-hidden"
         >
-          {"Welcome to my "}
-          <FlipWords duration={5000} words={["Portfolio", "CV"]} />
+          {/* Main content - always visible */}
+          <div
+            ref={contentRef}
+            className="relative z-20 w-full h-full origin-top-left"
+            style={{ transformOrigin: "top left" }}
+          >
+            <BlobCursor blobType="circle" fillColor="#ffffff" />
+
+            <div className="flex items-center justify-center h-full w-full">
+              <div
+                className="flex flex-row justify-center items-center text-white font-bold italic"
+                style={{ fontFamily: "Switzer, sans-serif" }}
+              >
+                <p className="text-[150px]">Welc</p>
+                <p id="o" className="text-[150px]">
+                  o
+                </p>
+                <p className="text-[150px]">me</p>
+              </div>
+              <SplitText
+                text="scroll to explore"
+                className="text-2xl font-semibold text-center absolute bottom-40 text-white"
+                loop={true}
+                delay={100}
+                duration={0.6}
+                ease="power3.out"
+                splitType="chars"
+                from={{ opacity: 0, y: 40 }}
+                to={{ opacity: 1, y: 0 }}
+                threshold={0.1}
+                rootMargin="-100px"
+                textAlign="center"
+              />
+            </div>
+          </div>
+
+          {/* Loader with background color - higher z-index to cover everything */}
+          <div
+            ref={backgroundRef}
+            className={`fixed inset-0 origin-top-left transition-opacity duration-1500 bg-[#101010] z-50 ${
+              fadeOut ? "opacity-0 pointer-events-none" : "opacity-100"
+            }`}
+            style={{
+              width: "100vw",
+              height: "100vh",
+              transformOrigin: "top left",
+            }}
+          >
+            {showLoader && <Loader />}
+          </div>
         </div>
       </div>
-      <Experience />
-      <Skills />
-      <About />
+      <Timeline />
+      <div
+        id="skills"
+        className="bg-[#2b2b2b] h-screen flex items-center justify-center"
+      ></div>
+      <div
+        id="about"
+        className="bg-[#2b2b2b] h-screen flex items-center justify-center"
+      ></div>
     </Template>
   );
 }

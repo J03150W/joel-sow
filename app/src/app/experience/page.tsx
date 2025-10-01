@@ -391,29 +391,34 @@ const ExperienceSection = ({
           className="flex w-full max-w-3xl 2xl:max-w-6xl items-center mb-8 lg:mb-16 relative cursor-pointer mt-16"
           onClick={handleTimelineClick}
         >
-          <div className="w-full h-0.5 bg-[#3e3e2e]/30 rounded-full" />
-          {Array.from({ length: total + 1 }).map((_, index) => (
-            <div
-              key={index}
-              className="absolute w-0.5 h-4 bg-[#3e3e2e]/50 rounded-full top-1/2 transform -translate-y-1/2"
-              style={{
-                left: `${(index / total) * 100}%`,
-              }}
-            />
-          ))}
+          <div className="w-full h-1 bg-[#3e3e2e]/30 rounded-full" />
+          {Array.from({ length: total + 1 }).map((_, index) => {
+            const isFirstOrLast = index === 0 || index === total;
+            return (
+              <div
+                key={index}
+                className={`absolute w-1 h-6 bg-[#3e3e2e]/50 rounded-full top-1/2 transform -translate-y-1/2 ${
+                  isFirstOrLast ? "z-10" : "z-0"
+                }`}
+                style={{
+                  left: `${(index / total) * 100}%`,
+                }}
+              />
+            );
+          })}
           <div
-            className="absolute bg-[#EEEDE9] px-2 py-1 z-50"
+            className="absolute bg-[#EEEDE9] px-4 py-1 z-50 h-8"
             style={{
               left: "100%",
               transform: "translateX(0) translateY(-50%)",
               top: "50%",
-              marginLeft: "2px",
+              marginLeft: "4px",
             }}
           />
           <motion.div
-            className="absolute h-2 top-1/2 transform -translate-y-1/2 rounded-full"
+            className="absolute h-4 top-1/2 transform -translate-y-1/2 rounded-full z-0"
             style={{
-              backgroundColor: highlightColor,
+              background: highlightColor,
               left: `${Math.max(
                 0,
                 springProgress.get() * 100 -
@@ -438,7 +443,7 @@ const ExperienceSection = ({
             transition={{ type: "spring", stiffness: 80, damping: 25 }}
           />
           <div
-            className="absolute -top-12 left-0 w-full flex justify-between text-3xl font-medium"
+            className="absolute -top-16 left-0 w-full flex justify-between text-4xl font-medium z-10"
             style={{ fontFamily: "Luxurious Script, sans-serif" }}
           >
             <span>{markers[0]}</span>
@@ -504,7 +509,7 @@ export default function Experience() {
     <div className="">
       <ExperienceSection
         experiences={workExperience}
-        highlightColor="#CED877"
+        highlightColor="linear-gradient(to right, rgba(255,255,255), rgba(200,200,200))"
         reversed={false}
         markers={[now[lang], "2021"]}
         title="Work Experience"

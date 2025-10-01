@@ -53,7 +53,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <div className="relative bg-[#EEEDE9]">
+    <div className="relative bg-[#101010] dark:bg-[#202020]">
       <div className="md:block fixed top-0 left-0 w-full z-50">
         <Navbar />
       </div>
@@ -81,7 +81,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
           <FakeSong showClose onClose={() => setShowUI(false)} {...player} />
         )} */}
 
-        <main className="relative z-10 pt-16">{children}</main>
+        <main className="relative z-10">{children}</main>
 
         <div
           id="portal-root"
