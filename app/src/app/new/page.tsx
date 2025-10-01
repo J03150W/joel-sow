@@ -13,7 +13,6 @@ import SplitText from "@/components/SplitText/SplitText";
 import Waves from "@/components/Waves/Waves";
 import Silk from "@/components/Silk/Silk";
 import { useLanguage } from "@/context/LanguageContext";
-import Cursor from "../components/cursor";
 import { LayoutGrid } from "../components/layout";
 import SkillsPage from "../skills/page";
 import Projects from "../projects/page";

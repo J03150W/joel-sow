@@ -1,5 +1,4 @@
 import { useLanguage } from "@/context/LanguageContext";
-import Cursor from "./cursor";
 
 type Props = {
   activeSection: string;
@@ -35,10 +34,7 @@ export default function Sidebar({ activeSection }: Props) {
 
   return (
     <>
-      <div className="-mt-16">
-        {/*<Cursor size={10} color={getCursorColor()} delay={0.1} opacity={0.9} />*/}
-        <Cursor size={10} color={"#ffffff"} delay={0.1} opacity={0} />
-      </div>
+      <div className="-mt-16"></div>
       <div
         className={` transition-opacity duration-150
       ${
