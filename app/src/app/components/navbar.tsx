@@ -4,7 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useLanguage } from "../../context/LanguageContext";
 
-export default function Navbar() {
+type Props = {
+  activeSection: string;
+};
+
+export default function Navbar({ activeSection }: Props) {
   const { lang, setLang } = useLanguage();
   const [showLangMenu, setShowLangMenu] = useState(false);
   const [needsMargin, setNeedsMargin] = useState(false);
@@ -39,13 +43,22 @@ export default function Navbar() {
       <div className="w-full max-w-screen-xl mx-auto flex justify-between items-center">
         <Link
           href="#home"
-          className="text-2xl italic text-white absolute left-4"
+          className={`text-2xl italic absolute left-4 transition-colors duration-500 ease-in-out ${
+            activeSection === "skills" ? "text-black" : "text-white"
+          }`}
           style={{ fontFamily: "Switzer, sans-serif" }}
         >
           joel sow
         </Link>
 
-        {/*<div className="absolute right-4">
+        {/*paste from bottom*/}
+      </div>
+    </div>
+  );
+}
+
+{
+  /*<div className="absolute right-4">
           <button onClick={toggleLangMenu}>
             <Image
               className="rounded-full object-cover"
@@ -85,8 +98,5 @@ export default function Navbar() {
               </button>
             </div>
           )}
-        </div>*/}
-      </div>
-    </div>
-  );
+        </div>*/
 }

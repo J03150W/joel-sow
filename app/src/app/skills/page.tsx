@@ -554,104 +554,124 @@ export default function SkillsPage() {
     {}
   );
 
-  const skillItems = [
+  const skillCards = [
     {
-      title: "UI/UX DESIGN",
-      description:
-        "Creating intuitive and visually appealing user interfaces with a focus on user experience and modern design principles.",
+      title: "Development",
+      text: "I have built a strong foundation in software development across multiple languages and frameworks. I have experience creating responsive interfaces, developing full-stack applications, and working across both frontend and backend layers.",
+      quote:
+        "„Code is like humor. When you have to explain it, it's bad.“ - Cory House",
+      background: "media/develop-bg.mp4",
+      media: (
+        <video
+          src="media/coding1.mp4"
+          className="h-30 w-4xs object-cover z-20 mb-5"
+          autoPlay
+          muted
+          loop
+          playsInline
+          controls={false}
+          controlsList="nodownload nofullscreen noremoteplayback"
+          disablePictureInPicture
+          preload="metadata"
+        />
+      ),
     },
     {
-      title: "FRONTEND DEVELOPMENT",
-      description:
-        "Building responsive and interactive web applications using React, TypeScript, and modern CSS frameworks like Tailwind.",
+      title: "Data & Integration",
+      text: "I have experience designing and managing data systems, developing reliable solutions that ensure efficiency, consistency, and strong application performance.",
+      quote: "No data is clean, but most is useful.“ - Dean Abbott",
+      background: "media/data-bg.mp4",
     },
     {
-      title: "BACKEND DEVELOPMENT",
-      description:
-        "Developing robust server-side applications with Java, Spring Boot, Kotlin, and ensuring clean, maintainable code architecture.",
-    },
-    {
-      title: "DATABASE MANAGEMENT",
-      description:
-        "Designing and optimizing relational and NoSQL databases, writing efficient queries, and ensuring data integrity.",
-    },
-    {
-      title: "PRESENTING & TEAMWORK",
-      description:
-        "Communicating technical concepts clearly, leading presentations, and collaborating effectively in agile development teams.",
-    },
-    {
-      title: "LANGUAGES",
-      description:
-        "Fluent in multiple programming languages and human languages, adapting communication style for diverse audiences and technical contexts.",
+      title: "Communication",
+      text: "I value collaboration and clear communication, contributing to a positive and productive team environment. My interpersonal skills help me share ideas effectively and work well with diverse groups and stakeholders.",
+      quote:
+        "„Teamwork means never having to take all the blame yourself.“ - Steven Hawking",
+      background: "media/com-bg.mp4",
     },
   ];
 
-  const getCardPosition = (index: number) => {
-    const positions = [
-      { x: "-30%", y: "50%" }, // UI/UX DESIGN - top left
-      { x: "95%", y: "40%" }, // FRONTEND - top right
-      { x: "0%", y: "40%" }, // BACKEND - middle left
-      { x: "100%", y: "75%" }, // DATABASE - bottom right
-      { x: "5%", y: "60%" }, // PRESENTING - top center
-      { x: "130%", y: "45%" }, // LANGUAGES - bottom center
-    ];
-    return positions[index] || { x: "50%", y: "50%" };
-  };
+  const [expandedIndex, setExpandedIndex] = useState(0);
 
-  const handleMouseEnter = (skillTitle: string) => {
-    setHoveredSkills((prev) => ({
-      ...prev,
-      [skillTitle]: true,
-    }));
-  };
-
-  const handleMouseLeave = (skillTitle: string) => {
-    setHoveredSkills((prev) => ({
-      ...prev,
-      [skillTitle]: false,
-    }));
+  const handleCardClick = (index: any) => {
+    if (expandedIndex !== index) {
+      setExpandedIndex(index);
+    }
   };
 
   return (
     <div
       id="skills"
-      className="h-[150vh] flex flex-col items-center italic justify-center text-[70px] 2xl:text-[100px] font-bold text-white relative"
-      style={{ fontFamily: "Switzer, sans-serif" }}
+      className="h-screen flex font-bold text-black bg-[#ffffff]"
+      style={{
+        fontFamily: "Switzer, sans-serif",
+      }}
     >
-      {skillItems.map((skill, index) => (
-        <div key={index} className="relative">
-          <p
-            className="cursor-pointer transition-colors duration-200 hover:text-gray-300"
-            onMouseEnter={() => handleMouseEnter(skill.title)}
-            onMouseLeave={() => handleMouseLeave(skill.title)}
-          >
-            {skill.title}
-          </p>
+      {skillCards.map((item, index) => {
+        const isExpanded = expandedIndex === index;
+        const isLastCard = index === skillCards.length - 1;
 
-          {/* Individual Hover Card for each skill */}
+        return (
           <div
-            className={`absolute bg-white h-70 w-55 z-50 pointer-events-none flex flex-col justify-center p-6 transition-all duration-300 ${
-              hoveredSkills[skill.title]
-                ? "opacity-100 scale-100"
-                : "opacity-0 scale-95"
-            }`}
-            style={{
-              left: getCardPosition(index).x,
-              top: getCardPosition(index).y,
-              transform: "translate(-50%, -50%)",
-              visibility: hoveredSkills[skill.title] ? "visible" : "hidden",
-            }}
+            key={index}
+            className={`
+              h-screen flex items-center justify-center
+              transition-all duration-500 ease-in-out cursor-pointer
+              group
+              ${
+                isExpanded
+                  ? "w-4/7"
+                  : expandedIndex !== null
+                  ? "w-1/3"
+                  : "w-1/3"
+              }
+              ${!isLastCard && ""}
+              relative
+              ${isExpanded ? "bg-[#f1f1f1]" : "bg-[#f1f1f1]"}
+            `}
+            onClick={() => handleCardClick(index)}
           >
-            <h3 className="text-black text-lg font-bold mb-3 text-center">
-              {skill.title}
-            </h3>
-            <p className="text-black text-sm font-normal text-center leading-relaxed">
-              {skill.description}
+            {isExpanded && (
+              <video
+                src={item.background}
+                className="absolute inset-0 h-full object-cover"
+                autoPlay
+                muted
+                loop
+                playsInline
+                controls={false}
+                controlsList="nodownload nofullscreen noremoteplayback"
+                disablePictureInPicture
+                preload="metadata"
+              />
+            )}
+            <p
+              className={`
+              [writing-mode:vertical-rl] rotate-180 whitespace-nowrap
+              absolute transition-all duration-500 ease-in-out text-5xl 2xl:text-[100px] 
+              ${
+                isExpanded
+                  ? "left-1/14 bottom-1/15 transform -translate-x-1/10"
+                  : "left-1/6 bottom-1/15 transform -translate-x-1/2"
+              }
+            `}
+            >
+              {item.title}
             </p>
+            <div
+              className={`
+              absolute bottom-1/15 left-1/5 w-2/5
+              transition-opacity duration-50 ease-in-out
+              ${isExpanded ? "opacity-100 delay-500" : "opacity-0 delay-0"}`}
+            >
+              <p className="text-2xl w-xs mb-2 italic">{item.quote}</p>
+              <p className="text-lg 2xl:text-2xl font-normal leading-relaxed">
+                {item.text}
+              </p>
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

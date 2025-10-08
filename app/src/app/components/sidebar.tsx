@@ -45,7 +45,9 @@ export default function Sidebar({ activeSection }: Props) {
           {navItems.map(({ id, label }) => (
             <li
               key={id}
-              className="italic text-sm text-white"
+              className={`italic text-sm transition-colors duration-500 ease-in-out ${
+                activeSection === "skills" ? "text-black" : "text-white"
+              }`}
               style={{ fontFamily: "Switzer, sans-serif" }}
             >
               <a href={`#${id}`}>

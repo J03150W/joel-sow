@@ -154,10 +154,7 @@ export default function NewPage() {
         </div>
       </div>
       <Timeline />
-      <div
-        id="skills"
-        className="bg-[#2b2b2b] h-screen flex items-center justify-center"
-      ></div>
+      <SkillsPage />
       <div
         id="about"
         className="bg-[#101010] h-screen flex items-center justify-center"
