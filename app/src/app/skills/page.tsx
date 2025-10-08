@@ -648,7 +648,7 @@ export default function SkillsPage() {
             <p
               className={`
               [writing-mode:vertical-rl] rotate-180 whitespace-nowrap
-              absolute transition-all duration-500 ease-in-out text-5xl 2xl:text-7xl
+              absolute transition-all duration-500 ease-in-out text-5xl 2xl:text-6xl
               ${
                 isExpanded
                   ? "left-1/14 bottom-1/15 transform -translate-x-1/10"
@@ -664,8 +664,8 @@ export default function SkillsPage() {
               transition-opacity duration-50 ease-in-out
               ${isExpanded ? "opacity-100 delay-500" : "opacity-0 delay-0"}`}
             >
-              <p className="text-2xl w-xs mb-2 italic">{item.quote}</p>
-              <p className="text-lg 2xl:text-2xl font-normal leading-relaxed">
+              <p className="text-2xl 2xl:text-xl w-xs mb-2 italic">{item.quote}</p>
+              <p className="text-lg 2xl:text-md font-normal leading-relaxed">
                 {item.text}
               </p>
             </div>
