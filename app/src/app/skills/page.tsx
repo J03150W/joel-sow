@@ -550,9 +550,6 @@ function Skills() {
 
 export default function SkillsPage() {
   const { lang } = useLanguage();
-  const [hoveredSkills, setHoveredSkills] = useState<Record<string, boolean>>(
-    {}
-  );
 
   const skillCards = [
     {
@@ -592,11 +589,19 @@ export default function SkillsPage() {
   ];
 
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
-  const [isHovering, setIsHovering] = useState(false);
+  const [lastExpandedIndex, setLastExpandedIndex] = useState<number | null>(null);
 
   const handleCardHover = (index: number | null) => {
-    setExpandedIndex(index);
-    setIsHovering(index !== null);
+    if (index !== null) {
+      setExpandedIndex(index);
+      setLastExpandedIndex(index);
+    } else {
+      setExpandedIndex(lastExpandedIndex);
+    }
+  };
+
+  const getIsExpanded = (index: number) => {
+    return expandedIndex === index;
   };
 
   return (
@@ -608,7 +613,7 @@ export default function SkillsPage() {
       }}
     >
       {skillCards.map((item, index) => {
-        const isExpanded = expandedIndex === index;
+        const isExpanded = getIsExpanded(index);
         const isLastCard = index === skillCards.length - 1;
 
         return (
@@ -660,21 +665,21 @@ export default function SkillsPage() {
                 {item.title}
               </p>
               
-<div
-  className={`
-    absolute bottom-1/15 left-1/5 w-2/5
-    ${
-      isExpanded 
-        ? "transition-all duration-500 ease-in delay-400 opacity-100 translate-y-0" 
-        : "transition-none opacity-0"
-    }
-  `}
->
-  <p className="text-2xl 2xl:text-3xl w-xs mb-2 italic">{item.quote}</p>
-  <p className="text-lg 2xl:text-xl font-normal leading-relaxed">
-    {item.text}
-  </p>
-</div>
+              <div
+                className={`
+                  absolute bottom-1/15 left-1/5 w-2/5
+                  ${
+                    isExpanded 
+                      ? "transition-all duration-500 ease-in delay-400 opacity-100 translate-y-0" 
+                      : "transition-none opacity-0"
+                  }
+                `}
+              >
+                <p className="text-2xl 2xl:text-3xl w-xs mb-2 italic">{item.quote}</p>
+                <p className="text-lg 2xl:text-xl font-normal leading-relaxed">
+                  {item.text}
+                </p>
+              </div>
             </div>
           </div>
         );
