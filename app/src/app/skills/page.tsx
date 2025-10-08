@@ -664,8 +664,8 @@ export default function SkillsPage() {
               transition-opacity duration-50 ease-in-out
               ${isExpanded ? "opacity-100 delay-500" : "opacity-0 delay-0"}`}
             >
-              <p className="text-2xl 2xl:text-xl w-xs mb-2 italic">{item.quote}</p>
-              <p className="text-lg 2xl:text-md font-normal leading-relaxed">
+              <p className="text-2xl w-xs mb-2 italic">{item.quote}</p>
+              <p className="text-lg font-normal leading-relaxed">
                 {item.text}
               </p>
             </div>
