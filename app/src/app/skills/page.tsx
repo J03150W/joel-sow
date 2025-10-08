@@ -648,7 +648,7 @@ export default function SkillsPage() {
             <p
               className={`
               [writing-mode:vertical-rl] rotate-180 whitespace-nowrap
-              absolute transition-all duration-500 ease-in-out text-5xl 2xl:text-9xl 
+              absolute transition-all duration-500 ease-in-out text-5xl
               ${
                 isExpanded
                   ? "left-1/14 bottom-1/15 transform -translate-x-1/10"
