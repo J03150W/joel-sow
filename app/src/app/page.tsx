@@ -22,6 +22,21 @@ export default function NewPage() {
   const animRef = useRef({ currentScroll: 0 });
 
   useEffect(() => {
+    if (showLoader) {
+      document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    };
+  }, [showLoader]);
+
+  useEffect(() => {
     function onScroll() {
       const currentScrollY = window.scrollY;
       isScrollingDown.current = currentScrollY > lastScrollY.current;
