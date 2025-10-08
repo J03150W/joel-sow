@@ -127,7 +127,7 @@ export default function NewPage() {
 
             <div className="h-full w-full">
                <div
-                className="relative flex flex-row text-white font-bold italic left-5 top-4/7 2xl:top-3/7"
+                className="relative flex flex-row text-white font-bold italic left-5 top-4/7 2xl:top-4/8"
                 style={{ fontFamily: "Switzer, sans-serif" }}
               >
                 <p className="text-[250px] 2xl:text-[350px]">welc</p>
