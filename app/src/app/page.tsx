@@ -123,20 +123,19 @@ export default function NewPage() {
             className="relative z-20 w-full h-full origin-top-left bg-[#202020]"
             style={{ transformOrigin: "top left" }}
           >
-            <BlobCursor blobType="circle" fillColor="#ffffff" />
+            <BlobCursor blobType="circle" fillColor="#717171ff" />
 
-            <div className="flex items-center justify-center h-full w-full">
+            <div className="h-full w-full">
                <div
-                className="flex flex-row justify-center items-center text-white font-bold italic"
+                className="relative flex flex-row text-white font-bold italic left-5 top-4/7"
                 style={{ fontFamily: "Switzer, sans-serif" }}
               >
-                <p className="text-[150px]">Welc</p>
-                <p id="o" className="text-[150px]">
+                <p className="text-[250px]">welc</p>
+                <p id="o" className="text-[250px]">
                   o
                 </p>
-                <p className="text-[150px]">me</p>
-              </div>              
-              <SplitText
+                <p className="text-[250px]">me</p>
+                {/*<SplitText
                 text="scroll to explore"
                 className="text-2xl font-semibold text-center absolute bottom-70 2xl:bottom-85 text-white"
                 loop={true}
@@ -149,7 +148,9 @@ export default function NewPage() {
                 threshold={0.1}
                 rootMargin="-100px"
                 textAlign="center"
-              />
+              />*/}
+              </div>              
+              
             </div>
           </div>
 

@@ -625,13 +625,11 @@ export default function SkillsPage() {
                   ? "w-1/3"
                   : "w-1/3"
               }
-              ${isExpanded ? "bg-[#f1f1f1]" : "bg-[#f1f1f1]"}
+              ${isExpanded ? "bg-[#e0e0e0]" : "bg-[#e0e0e0]"}
             `}
             onMouseEnter={() => handleCardHover(index)}
             onMouseLeave={() => handleCardHover(null)}
-            onClick={() => handleCardHover(isExpanded ? null : index)}
           >
-            {/* Video Background - Only show when expanded */}
             {isExpanded && (
               <video
                 src={item.background}
@@ -647,7 +645,6 @@ export default function SkillsPage() {
               />
             )}
 
-            {/* Content Overlay */}
             <div className="relative z-10 w-full h-full">
               <p
                 className={`

@@ -237,7 +237,7 @@ export default function BlobCursor({
 
   return (
     <div
-      className="fixed top-0 left-0 w-full h-full"
+      className="fixed top-0 left-0 w-full h-full ml-2 mt-2"
       style={{
         zIndex: 100,
         pointerEvents: "none",
