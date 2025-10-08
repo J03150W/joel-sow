@@ -648,20 +648,20 @@ export default function SkillsPage() {
             onMouseEnter={() => handleCardHover(index)}
             onMouseLeave={() => handleCardHover(null)}
           >
-            {isExpanded && (
-              <video
-                src={item.background}
-                className="absolute inset-0 w-full h-full object-cover opacity-100"
-                autoPlay
-                muted
-                loop
-                playsInline
-                controls={false}
-                controlsList="nodownload nofullscreen noremoteplayback"
-                disablePictureInPicture
-                preload="auto"
-              />
-            )}
+            <video
+              src={item.background}
+              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ease-in-out ${
+                isExpanded ? "opacity-100" : "opacity-0"
+              }`}
+              autoPlay
+              muted
+              loop
+              playsInline
+              controls={false}
+              controlsList="nodownload nofullscreen noremoteplayback"
+              disablePictureInPicture
+              preload="auto"
+            />
 
             <div className="relative z-10 w-full h-full">
               <p
