@@ -123,7 +123,7 @@ export default function NewPage() {
               </div>              
               <SplitText
                 text="scroll to explore"
-                className="text-2xl font-semibold text-center absolute bottom-65 2xl:bottom-90 text-white"
+                className="text-2xl font-semibold text-center absolute bottom-70 2xl:bottom-85 text-white"
                 loop={true}
                 delay={100}
                 duration={0.6}

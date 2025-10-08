@@ -341,7 +341,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
               key={`${tech.name}-${index}`}
               src={tech.logo}
               alt={tech.name}
-              className="h-8 md:h-10 2xl:h-16 w-auto mx-4"
+              className="h-8 md:h-10 2xl:h-12 w-auto mx-4"
             />
           ))}
         </div>
