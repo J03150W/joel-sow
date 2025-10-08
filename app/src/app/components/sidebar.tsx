@@ -15,7 +15,6 @@ export default function Sidebar({ activeSection }: Props) {
   const navItems = [
     { id: "experience", label: { en: "Experience", de: "Erfahrung" } },
     { id: "skills", label: { en: "Skills", de: "Kenntnisse" } },
-    { id: "about", label: { en: "About", de: "Über mich" } },
   ];
 
   return (
