@@ -591,12 +591,12 @@ export default function SkillsPage() {
     },
   ];
 
-  const [expandedIndex, setExpandedIndex] = useState(0);
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+  const [isHovering, setIsHovering] = useState(false);
 
-  const handleCardClick = (index: any) => {
-    if (expandedIndex !== index) {
-      setExpandedIndex(index);
-    }
+  const handleCardHover = (index: number | null) => {
+    setExpandedIndex(index);
+    setIsHovering(index !== null);
   };
 
   return (
@@ -617,7 +617,7 @@ export default function SkillsPage() {
             className={`
               h-screen flex items-center justify-center
               transition-all duration-500 ease-in-out cursor-pointer
-              group
+              group relative overflow-hidden
               ${
                 isExpanded
                   ? "w-4/7"
@@ -625,16 +625,17 @@ export default function SkillsPage() {
                   ? "w-1/3"
                   : "w-1/3"
               }
-              ${!isLastCard && ""}
-              relative
               ${isExpanded ? "bg-[#f1f1f1]" : "bg-[#f1f1f1]"}
             `}
-            onClick={() => handleCardClick(index)}
+            onMouseEnter={() => handleCardHover(index)}
+            onMouseLeave={() => handleCardHover(null)}
+            onClick={() => handleCardHover(isExpanded ? null : index)}
           >
+            {/* Video Background - Only show when expanded */}
             {isExpanded && (
               <video
                 src={item.background}
-                className="absolute inset-0 h-full object-cover"
+                className="absolute inset-0 w-full h-full object-cover opacity-100"
                 autoPlay
                 muted
                 loop
@@ -645,29 +646,38 @@ export default function SkillsPage() {
                 preload="metadata"
               />
             )}
-            <p
-              className={`
-              [writing-mode:vertical-rl] rotate-180 whitespace-nowrap
-              absolute transition-all duration-500 ease-in-out text-5xl 2xl:text-6xl
-              ${
-                isExpanded
-                  ? "left-1/14 bottom-1/15 transform -translate-x-1/10"
-                  : "left-1/6 bottom-1/15 transform -translate-x-1/2"
-              }
-            `}
-            >
-              {item.title}
-            </p>
-            <div
-              className={`
-              absolute bottom-1/15 left-1/5 w-2/5
-              transition-opacity duration-50 ease-in-out
-              ${isExpanded ? "opacity-100 delay-500" : "opacity-0 delay-0"}`}
-            >
-              <p className="text-2xl 2xl:text-3xl w-xs mb-2 italic">{item.quote}</p>
-              <p className="text-lg 2xl:text-xl font-normal leading-relaxed">
-                {item.text}
+
+            {/* Content Overlay */}
+            <div className="relative z-10 w-full h-full">
+              <p
+                className={`
+                [writing-mode:vertical-rl] rotate-180 whitespace-nowrap
+                absolute transition-all duration-200 ease-in text-5xl 2xl:text-6xl
+                ${
+                  isExpanded
+                    ? "left-1/14 bottom-1/15 transform"
+                    : "left-1/6 bottom-1/15 transform text-black"
+                }
+              `}
+              >
+                {item.title}
               </p>
+              
+<div
+  className={`
+    absolute bottom-1/15 left-1/5 w-2/5
+    ${
+      isExpanded 
+        ? "transition-all duration-500 ease-in delay-400 opacity-100 translate-y-0" 
+        : "transition-none opacity-0"
+    }
+  `}
+>
+  <p className="text-2xl 2xl:text-3xl w-xs mb-2 italic">{item.quote}</p>
+  <p className="text-lg 2xl:text-xl font-normal leading-relaxed">
+    {item.text}
+  </p>
+</div>
             </div>
           </div>
         );
