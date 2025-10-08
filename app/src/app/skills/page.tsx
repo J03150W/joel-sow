@@ -588,7 +588,7 @@ export default function SkillsPage() {
     },
   ];
 
-  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(1);
   const [lastExpandedIndex, setLastExpandedIndex] = useState<number | null>(null);
 
   const handleCardHover = (index: number | null) => {
@@ -612,6 +612,19 @@ export default function SkillsPage() {
         fontFamily: "Switzer, sans-serif",
       }}
     >
+      <div className="hidden">
+        {skillCards.map((item, index) => (
+          <video
+            key={`preload-${index}`}
+            src={item.background}
+            preload="auto"
+            muted
+            playsInline
+            loop
+          />
+        ))}
+      </div>
+
       {skillCards.map((item, index) => {
         const isExpanded = getIsExpanded(index);
         const isLastCard = index === skillCards.length - 1;
@@ -646,7 +659,7 @@ export default function SkillsPage() {
                 controls={false}
                 controlsList="nodownload nofullscreen noremoteplayback"
                 disablePictureInPicture
-                preload="metadata"
+                preload="auto"
               />
             )}
 
