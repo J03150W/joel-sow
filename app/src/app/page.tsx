@@ -130,11 +130,11 @@ export default function NewPage() {
                 className="relative flex flex-row text-white font-bold italic left-5 top-4/7"
                 style={{ fontFamily: "Switzer, sans-serif" }}
               >
-                <p className="text-[250px]">welc</p>
-                <p id="o" className="text-[250px]">
+                <p className="text-[250px] 2xl:text-[400px]">welc</p>
+                <p id="o" className="text-[250px] 2xl:text-[400px]">
                   o
                 </p>
-                <p className="text-[250px]">me</p>
+                <p className="text-[250px] 2xl:text-[400px]">me</p>
                 {/*<SplitText
                 text="scroll to explore"
                 className="text-2xl font-semibold text-center absolute bottom-70 2xl:bottom-85 text-white"
