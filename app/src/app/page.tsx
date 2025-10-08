@@ -6,6 +6,7 @@ import SplitText from "@/components/SplitText/SplitText";
 import Template from "./components/template";
 import Timeline from "./components/timeline";
 import Loader from "./components/loader";
+import SkillsPage from "./skills/page";
 
 export default function NewPage() {
   const { lang } = useLanguage();
@@ -102,16 +103,15 @@ export default function NewPage() {
           data-blob-active
           className="relative z-20 flex flex-col h-screen overflow-hidden"
         >
-          {/* Main content - always visible */}
           <div
             ref={contentRef}
-            className="relative z-20 w-full h-full origin-top-left"
+            className="relative z-20 w-full h-full origin-top-left bg-[#202020]"
             style={{ transformOrigin: "top left" }}
           >
             <BlobCursor blobType="circle" fillColor="#ffffff" />
 
             <div className="flex items-center justify-center h-full w-full">
-              <div
+               <div
                 className="flex flex-row justify-center items-center text-white font-bold italic"
                 style={{ fontFamily: "Switzer, sans-serif" }}
               >
@@ -120,10 +120,10 @@ export default function NewPage() {
                   o
                 </p>
                 <p className="text-[150px]">me</p>
-              </div>
+              </div>              
               <SplitText
                 text="scroll to explore"
-                className="text-2xl font-semibold text-center absolute bottom-65 text-white"
+                className="text-2xl font-semibold text-center absolute bottom-65 2xl:bottom-90 text-white"
                 loop={true}
                 delay={100}
                 duration={0.6}
@@ -138,10 +138,9 @@ export default function NewPage() {
             </div>
           </div>
 
-          {/* Loader with background color - higher z-index to cover everything */}
           <div
             ref={backgroundRef}
-            className={`fixed inset-0 origin-top-left transition-opacity duration-1500 bg-[#101010] z-50 ${
+            className={`fixed inset-0 origin-top-left transition-opacity duration-1000 bg-[#202020] z-50 ${
               fadeOut ? "opacity-0 pointer-events-none" : "opacity-100"
             }`}
             style={{
@@ -161,7 +160,7 @@ export default function NewPage() {
       ></div>
       <div
         id="about"
-        className="bg-[#2b2b2b] h-screen flex items-center justify-center"
+        className="bg-[#101010] h-screen flex items-center justify-center"
       ></div>
     </Template>
   );

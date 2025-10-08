@@ -319,6 +319,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
     >
       <motion.h3
         className="flex justify-between items-center w-full text-white text-xl 2xl:text-3xl font-bold italic"
+        style={{ fontFamily: "Switzer, sans-serif" }}
       >
         <span>{title}</span>
         <p className="text-md 2xl:text-xl mr-2 ">{range}</p>
